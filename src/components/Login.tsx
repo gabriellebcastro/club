@@ -3,6 +3,7 @@ import "./Login.css";
 import illustration from "../assets/illustration-login.svg";
 import { useState } from 'react';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
+import { Link } from "react-router-dom";
 
 export function LoginForm() {
     const [showPassword, setShowPassword] = useState(false);
@@ -32,7 +33,7 @@ export function LoginForm() {
           type="button"
           className="eye-button"
           onClick={togglePassword}
-          tabIndex={-1} // evita foco duplo
+          tabIndex={-1}
         >
           {showPassword ? <FiEyeOff /> : <FiEye />}
         </button>
@@ -49,7 +50,7 @@ export function LoginForm() {
     <button>Entrar</button>
 
         <p className="register-link">
-          Ainda não tem uma conta? <a href="#">Cadastre-se.</a>
+          Ainda não tem uma conta? <Link to="/register">Cadastre-se.</Link>
         </p>
       </div>
 
