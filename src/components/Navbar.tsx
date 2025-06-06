@@ -27,7 +27,7 @@ export function Navbar() {
             alt="Perfil do usuário"
           />
           {menuOpen && (
-            <div className="dropdown-menu" onMouseLeave={closeMenu}>
+            <div className="navbar-dropdown-menu" onMouseLeave={closeMenu}>
               <Link to="/perfil">Perfil</Link>
               <Link to="/criar-club">Criar Club</Link>
               <Link to="/estatisticas">Minhas Estatísticas</Link>

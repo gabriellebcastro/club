@@ -1,6 +1,7 @@
 import { Navbar } from "../components/Navbar";
 import "./Home.css";
 import illustration from "../assets/illustration-login.svg";
+import { Link } from "react-router-dom";
 
 export function Home() {
   return (
@@ -13,8 +14,9 @@ export function Home() {
           <p className="subtitle">Pronta para embarcar em uma nova leitura?</p>
 
           <div className="buttons">
-            <button className="btn black">Ver meus clubes</button>
-            <button className="btn white">Encontrar clubes</button>
+            <Link to="/clubes?tab=meus" className="btn black">Ver meus clubes</Link>
+            <Link to="/clubes?tab=encontrar" className="btn white">Encontrar clubes</Link>
+
           </div>
         </div>
         <div className="illustration">
