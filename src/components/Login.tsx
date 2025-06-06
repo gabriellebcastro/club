@@ -24,7 +24,7 @@ export function LoginForm() {
 
     try {
       const response = await axios.post("http://localhost:4000/login", {
-        identifier: form.identifier,
+        emailOrUsername: form.identifier,
         password: form.password,
       });
 
@@ -34,7 +34,7 @@ export function LoginForm() {
       setMessage("Login realizado com sucesso!");
 
       // Redireciona para a página principal (ajuste a rota conforme seu projeto)
-      navigate("/dashboard");
+      navigate("/home");
     } catch (err: unknown) {
       if (axios.isAxiosError(err) && err.response) {
         setMessage(err.response.data.message);
