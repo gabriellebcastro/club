@@ -1,12 +1,21 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import "./Navbar.css";
+import { useNavigate } from "react-router-dom";
 
 export function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
   const closeMenu = () => setMenuOpen(false);
+
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+  localStorage.removeItem("token"); 
+  navigate("/");
+  };
+
 
   return (
     <nav className="navbar">
@@ -32,7 +41,7 @@ export function Navbar() {
               <Link to="/criar-club">Criar Club</Link>
               <Link to="/estatisticas">Minhas Estatísticas</Link>
               <Link to="/configuracoes">Configurações</Link>
-              <Link to="/logout">Sair</Link>
+              <button onClick={handleLogout} className="dropdown-item">Sair</button>
             </div>
           )}
         </div>
