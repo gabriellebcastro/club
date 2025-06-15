@@ -3,6 +3,7 @@ import { LoginForm } from "./components/Login";
 import { RegisterForm } from "./components/Register";
 import { Home } from "./components/Home";
 import { ClubesPage } from "./components/Clubes";
+import { RecoverPassword } from "./components/RecoverPassword";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route path="/register" element={<RegisterForm />} />
         <Route path="/home" element={< Home/>} />
         <Route path="/clubes" element={< ClubesPage/>} />
+        <Route path="/recover" element={< RecoverPassword/>}/>
       </Routes>
     </Router>
   );

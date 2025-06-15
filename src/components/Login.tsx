@@ -94,7 +94,7 @@ export function LoginForm() {
           <label>
             <input type="checkbox" /> Manter conectado
           </label>
-          <a href="#" className="forgot-password">Esqueceu a senha?</a>
+          <Link to="/recover" className="forgot-password">Esqueceu a senha?</Link>
         </div>
 
         <button type="submit">Entrar</button>
