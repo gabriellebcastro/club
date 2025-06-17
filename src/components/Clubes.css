@@ -45,21 +45,51 @@
 
 .filtros {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   justify-content: center;
   gap: 12px;
   margin-bottom: 40px;
   align-items: center;
 }
 
-.filtros input[type="text"] {
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.search-bar input[type="text"] {
   padding: 10px 12px;
   border: 1px solid #ddd;
   border-radius: 8px;
   width: 240px;
 }
 
-.filtros button {
+.search-bar button.search-icon {
+  background-color: black;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.filtros-rapidos {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filtros-label {
+  font-weight: bold;
+  margin-right: 8px;
+}
+
+.filtros-rapidos button {
   display: flex;
   align-items: center;
   gap: 4px;
