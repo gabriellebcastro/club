@@ -80,17 +80,6 @@ export function ClubesPage() {
               <h3>{club.titulo}</h3>
               <button className="entrar">Entrar</button>
               <p className="genero">📚 {club.genero}</p>
-              <div className="membros">
-                {[...Array(5)].map((_, i) => (
-                  <img
-                    key={i}
-                    className="avatar-membro"
-                    src={`https://i.pravatar.cc/30?img=${i + 1}`}
-                    alt="Membro"
-                  />
-                ))}
-                <span className="mais">+{club.membros}</span>
-              </div>
             </div>
           ))}
         </div>
