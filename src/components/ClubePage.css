@@ -67,3 +67,45 @@
   border-radius: 8px;
   font-weight: 500;
 }
+
+.clube-eventos {
+  margin-bottom: 40px;
+}
+
+.eventos-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.btn-criar-evento {
+  background-color: black;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btn-criar-evento:hover {
+  background-color: #333;
+}
+
+.eventos-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.evento-card {
+  background: #fefefe;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+  font-size: 14px;
+  color: #444;
+}
+

@@ -8,7 +8,9 @@ export function ClubePage() {
 
       <header className="clubes-hero">
         <h1>Clube Café com Livros</h1>
-        <p className="subheading">Um espaço para amantes da literatura contemporânea se reunirem e discutirem grandes obras.</p>
+        <p className="subheading">
+          Um espaço para amantes da literatura contemporânea se reunirem e discutirem grandes obras.
+        </p>
       </header>
 
       <main className="clube-container">
@@ -40,6 +42,29 @@ export function ClubePage() {
           <h2>Progresso</h2>
           <div className="progress-bar">
             <div className="progress" style={{ width: "45%" }}>45%</div>
+          </div>
+        </section>
+
+        <section className="clube-eventos">
+          <div className="eventos-header">
+            <h2>📅 Próximos Eventos</h2>
+            <button className="btn-criar-evento">+ Criar Evento</button>
+          </div>
+
+          <div className="eventos-lista">
+            <div className="evento-card">
+              <h3>Discussão da Parte 1</h3>
+              <p><strong>Data:</strong> 28/06/2025</p>
+              <p><strong>Horário:</strong> 19:00</p>
+              <p><strong>Plataforma:</strong> Google Meet</p>
+            </div>
+
+            <div className="evento-card">
+              <h3>Encontro Literário Especial</h3>
+              <p><strong>Data:</strong> 05/07/2025</p>
+              <p><strong>Horário:</strong> 20:00</p>
+              <p><strong>Plataforma:</strong> Zoom</p>
+            </div>
           </div>
         </section>
 
