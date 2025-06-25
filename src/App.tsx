@@ -4,6 +4,7 @@ import { RegisterForm } from "./components/Register";
 import { Home } from "./components/Home";
 import { ClubesPage } from "./components/Clubes";
 import { RecoverPassword } from "./components/RecoverPassword";
+import { CreateClub } from "./components/CreateClub"
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/home" element={< Home/>} />
         <Route path="/clubes" element={< ClubesPage/>} />
         <Route path="/recover" element={< RecoverPassword/>}/>
+        <Route path="/create" element={< CreateClub/>}/>
       </Routes>
     </Router>
   );
