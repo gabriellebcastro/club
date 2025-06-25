@@ -20,12 +20,11 @@ export function ClubesPage() {
   return (
     <>
       <Navbar />
+      
       <div className="clubes-hero">
         <h1>Encontre seu Club</h1>
         <p className="subheading">Sua próxima história inesquecível começa aqui.</p>
-      </div>
 
-      <div className="clubes-page">
         <div className="tabs">
           <button
             className={tab === "encontrar" ? "active" : ""}
@@ -40,7 +39,9 @@ export function ClubesPage() {
             Meus Clubes
           </button>
         </div>
+      </div>
 
+      <div className="clubes-page">
         <div className="filtros">
           <div className="search-bar">
             <input type="text" placeholder="Pesquise clubes pelo nome" />
@@ -58,14 +59,13 @@ export function ClubesPage() {
               >
                 🧍‍♂️ Encontros
               </button>
-                {showEncontrosDropdown && (
+              {showEncontrosDropdown && (
                 <div className="club-dropdown-menu">
-                    <button>Presenciais</button>
-                    <button>Virtuais</button>
-                    <button>Híbridos</button>
+                  <button>Presenciais</button>
+                  <button>Virtuais</button>
+                  <button>Híbridos</button>
                 </div>
-                )}
-
+              )}
             </div>
             <button>📌 Vagas</button>
             <button>👥 Número de membros</button>

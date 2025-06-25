@@ -21,26 +21,34 @@
 .tabs {
   display: flex;
   justify-content: center;
-  margin-bottom: 32px;
-  border-radius: 8px;
-  overflow: hidden;
-  background-color: #f2f2f2;
+  align-items: center;
+  position: absolute;
+  bottom: 0;
+  transform: translateY(50%);
+  background-color: transparent;
+  border-radius: 12px 12px 0 0;
+  overflow: visible;
+  z-index: 2;
+  gap: 4px;
 }
 
 .tabs button {
-  flex: 1;
-  padding: 12px 0;
+  padding: 14px 32px;
   border: none;
-  background-color: #f2f2f2;
+  background-color: #f7f7f7;
   color: #999;
   font-weight: 600;
   cursor: pointer;
   transition: background 0.3s, color 0.3s;
+  border-radius: 12px 12px 0 0;
+  min-width: 220px;
+  font-family: 'Poppins', sans-serif;
 }
 
 .tabs button.active {
   background-color: black;
   color: white;
+  z-index: 3;
 }
 
 .filtros {
@@ -239,6 +247,8 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
+  position: relative; /* Essencial para a .tabs posicionar relativamente a isso */
 }
 
 .clubes-hero h1 {
