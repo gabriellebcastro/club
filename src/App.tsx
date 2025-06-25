@@ -5,6 +5,7 @@ import { Home } from "./components/Home";
 import { ClubesPage } from "./components/Clubes";
 import { RecoverPassword } from "./components/RecoverPassword";
 import { CreateClub } from "./components/CreateClub"
+import { ClubePage } from "./components/ClubePage";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/clubes" element={< ClubesPage/>} />
         <Route path="/recover" element={< RecoverPassword/>}/>
         <Route path="/create" element={< CreateClub/>}/>
+        <Route path="/clube" element={< ClubePage/>}/>
       </Routes>
     </Router>
   );
