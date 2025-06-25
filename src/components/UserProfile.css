@@ -1,0 +1,83 @@
+.perfil-hero {
+  margin-top: 80px; 
+  background-image: url("../assets/bg-clubes.svg");
+  background-repeat: repeat-x;
+  background-size: 50% auto;
+  background-position: top center;
+  padding: 40px 16px 60px;
+  text-align: center;
+  position: relative;
+  font-family: 'Inter', sans-serif;
+}
+
+.perfil-header-content {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.perfil-foto {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 4px solid white;
+  object-fit: cover;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  background-color: white;
+}
+
+.perfil-bio {
+  font-size: 16px;
+  color: #555;
+  margin-top: 12px;
+  max-width: 500px;
+}
+
+.perfil-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 40px 16px;
+  font-family: 'Inter', sans-serif;
+}
+
+.livros-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+.livro-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  width: 220px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  text-align: center;
+  transition: transform 0.3s;
+}
+
+.livro-card:hover {
+  transform: translateY(-5px);
+}
+
+.livro-card img {
+  width: 100%;
+  height: 240px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.livro-card h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.livro-card p {
+  font-size: 14px;
+  color: #777;
+}

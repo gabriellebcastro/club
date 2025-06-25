@@ -37,7 +37,7 @@ export function Navbar() {
           />
           {menuOpen && (
             <div className="navbar-dropdown-menu" onMouseLeave={closeMenu}>
-              <Link to="/perfil">Perfil</Link>
+              <Link to="/profile">Perfil</Link>
               <Link to="/create">Criar Club</Link>
               <Link to="/estatisticas">Minhas Estatísticas</Link>
               <Link to="/configuracoes">Configurações</Link>

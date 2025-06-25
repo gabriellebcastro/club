@@ -6,6 +6,7 @@ import { ClubesPage } from "./components/Clubes";
 import { RecoverPassword } from "./components/RecoverPassword";
 import { CreateClub } from "./components/CreateClub"
 import { ClubePage } from "./components/ClubePage";
+import { UserProfile } from "./components/UserProfile";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/recover" element={< RecoverPassword/>}/>
         <Route path="/create" element={< CreateClub/>}/>
         <Route path="/clube" element={< ClubePage/>}/>
+        <Route path="/profile" element={ < UserProfile/>}/>
       </Routes>
     </Router>
   );
