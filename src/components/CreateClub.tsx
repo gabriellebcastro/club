@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "./CreateClub.css";
 import { Navbar } from "./Navbar";
+import axios from 'axios';
 
 export function CreateClub() {
   const [etapa, setEtapa] = useState(1);
@@ -15,6 +16,18 @@ export function CreateClub() {
 
   const avancar = () => setEtapa((prev) => prev + 1);
   const voltar = () => setEtapa((prev) => prev - 1);
+
+  const criarClub = async () => {
+  try {
+    const res = await axios.post('http://localhost:4000/api/clubs', formData);
+    alert('Clube criado com sucesso!');
+    console.log(res.data);
+  } catch (err) {
+    console.error(err);
+    alert('Erro ao criar clube!');
+  }
+};
+
 
   return (
     <>
@@ -135,7 +148,7 @@ export function CreateClub() {
 
               <div className="form-navigation">
                 <button onClick={voltar}>Voltar</button>
-                <button onClick={() => console.log(formData)}>Criar Club</button>
+                <button onClick={criarClub}>Criar Club</button>
               </div>
             </div>
           )}

@@ -1,0 +1,3 @@
+MONGO_URI=mongodb+srv://gabriellebcastro:xk7ZtuJ1Nri975Ni@club-db.fnpfpi0.mongodb.net/club?retryWrites=true&w=majority&appName=club-db
+JWT_SECRET=MinhaChaveSuperSecreta12345!
+PORT=4000
