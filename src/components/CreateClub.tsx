@@ -4,23 +4,54 @@ import { Navbar } from "./Navbar";
 
 export function CreateClub() {
   const [etapa, setEtapa] = useState(1);
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState<Record<string, string | number>>({});
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const avancar = () => setEtapa((prev) => prev + 1);
   const voltar = () => setEtapa((prev) => prev - 1);
 
+  const criarClube = async () => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("Você precisa estar logado para criar um clube.");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:4000/api/clubes", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("Clube criado com sucesso!");
+        console.log("Novo clube:", data);
+        // Redirecionar ou limpar formulário, se desejar
+      } else {
+        alert(data.message || "Erro ao criar clube.");
+      }
+    } catch (error) {
+      console.error("Erro ao criar clube:", error);
+      alert("Erro na comunicação com o servidor.");
+    }
+  };
+
   return (
     <>
-      {/* Navbar separada para não herdar estilo */}
       <Navbar />
-
       <div className="criarclub-container">
         <header className="clubes-hero">
           <h1>Crie seu Club</h1>
@@ -34,49 +65,37 @@ export function CreateClub() {
             <div className={etapa === 3 ? "active" : ""}>Regras e Preferências</div>
           </div>
 
-          {/* Etapas do formulário */}
           {etapa === 1 && (
             <div className="step-content">
               <label>Nome do Clube</label>
               <input type="text" name="nome" onChange={handleInputChange} />
-
               <label>Descrição do Clube</label>
               <textarea name="descricao" onChange={handleInputChange} />
-
-              <label>Gênero Literário Principal</label>
+              <label>Gênero</label>
               <select name="genero" onChange={handleInputChange}>
                 <option value="">Escolha o gênero</option>
                 <option>Romance</option>
                 <option>Terror</option>
               </select>
-
-              <label>Tipo do Clube</label>
+              <label>Tipo</label>
               <select name="tipo" onChange={handleInputChange}>
-                <option value="">Escolha o tipo</option>
                 <option>Público</option>
                 <option>Privado</option>
               </select>
-
-              <label>Formato dos Encontros</label>
+              <label>Formato</label>
               <select name="formato" onChange={handleInputChange}>
-                <option value="">Escolha o formato</option>
                 <option>Presencial</option>
                 <option>Online</option>
               </select>
-
-              <label>Frequência dos Encontros</label>
+              <label>Frequência</label>
               <select name="frequencia" onChange={handleInputChange}>
-                <option value="">Escolha a frequência</option>
                 <option>Semanal</option>
                 <option>Mensal</option>
               </select>
-
-              <label>Número Máximo de Participantes</label>
+              <label>Limite</label>
               <input type="number" name="limite" onChange={handleInputChange} />
-
               <label>Faixa Etária</label>
               <input type="text" name="faixa" onChange={handleInputChange} />
-
               <div className="form-navigation">
                 <button disabled>Voltar</button>
                 <button onClick={avancar}>Próximo</button>
@@ -86,18 +105,10 @@ export function CreateClub() {
 
           {etapa === 2 && (
             <div className="step-content">
-              <label>Capa do Club</label>
-              <div className="upload-box">
-                <p>Arraste ou selecione uma imagem</p>
-                <input type="file" accept="image/*" />
-              </div>
-
-              <label>Foto de Perfil</label>
-              <div className="upload-box">
-                <p>Arraste ou selecione uma imagem</p>
-                <input type="file" accept="image/*" />
-              </div>
-
+              <label>Capa</label>
+              <input type="file" disabled />
+              <label>Foto Perfil</label>
+              <input type="file" disabled />
               <div className="form-navigation">
                 <button onClick={voltar}>Voltar</button>
                 <button onClick={avancar}>Próximo</button>
@@ -109,33 +120,41 @@ export function CreateClub() {
             <div className="step-content">
               <label>Regras</label>
               <textarea name="regras" onChange={handleInputChange} />
-
-              <label>Política de Faltas</label>
+              <label>Política</label>
               <input name="politica" onChange={handleInputChange} />
-
-              <label>Aceita novos membros?</label>
-              <div className="radio-group">
-                <label>
-                  <input type="radio" name="novos" value="Sim" onChange={handleInputChange} /> Sim
-                </label>
-                <label>
-                  <input type="radio" name="novos" value="Não" onChange={handleInputChange} /> Não
-                </label>
-              </div>
-
-              <label>Aceita convidados?</label>
-              <div className="radio-group">
-                <label>
-                  <input type="radio" name="convidados" value="Sim" onChange={handleInputChange} /> Sim
-                </label>
-                <label>
-                  <input type="radio" name="convidados" value="Não" onChange={handleInputChange} /> Não
-                </label>
-              </div>
-
+              <label>Novos Membros</label>
+              <input
+                type="radio"
+                name="novos"
+                value="Sim"
+                onChange={handleInputChange}
+              />{" "}
+              Sim
+              <input
+                type="radio"
+                name="novos"
+                value="Não"
+                onChange={handleInputChange}
+              />{" "}
+              Não
+              <label>Convidados</label>
+              <input
+                type="radio"
+                name="convidados"
+                value="Sim"
+                onChange={handleInputChange}
+              />{" "}
+              Sim
+              <input
+                type="radio"
+                name="convidados"
+                value="Não"
+                onChange={handleInputChange}
+              />{" "}
+              Não
               <div className="form-navigation">
                 <button onClick={voltar}>Voltar</button>
-                <button onClick={() => console.log(formData)}>Criar Club</button>
+                <button onClick={criarClube}>Criar Club</button>
               </div>
             </div>
           )}
