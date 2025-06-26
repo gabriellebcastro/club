@@ -19,7 +19,7 @@ function App() {
         <Route path="/clubes" element={< ClubesPage/>} />
         <Route path="/recover" element={< RecoverPassword/>}/>
         <Route path="/create" element={< CreateClub/>}/>
-        <Route path="/clube" element={< ClubePage/>}/>
+        <Route path="/clube/:id" element={< ClubePage/>}/>
         <Route path="/profile" element={ < UserProfile/>}/>
       </Routes>
     </Router>

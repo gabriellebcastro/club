@@ -25,3 +25,15 @@ export async function listarClubes(req, res) {
     res.status(500).json({ message: 'Erro ao buscar clubes.' });
   }
 }
+
+export async function obterClubePorId(req, res) {
+  try {
+    const clube = await Club.findById(req.params.id).populate('moderador', 'username');
+    if (!clube) return res.status(404).json({ message: 'Clube não encontrado' });
+
+    res.json(clube);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Erro ao buscar clube.' });
+  }
+}

@@ -2,8 +2,11 @@ import { useState, useEffect } from "react";
 import "./Clubes.css";
 import { useSearchParams } from "react-router-dom";
 import { Navbar } from "./Navbar";
+import { useNavigate } from "react-router-dom";
+
 
 type Clube = {
+  _id: string;
   nome: string;
   tipo: string;
   genero: string;
@@ -11,6 +14,7 @@ type Clube = {
 };
 
 export function ClubesPage() {
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const tabParam = searchParams.get("tab");
   const [tab, setTab] = useState(tabParam || "encontrar");
@@ -82,7 +86,7 @@ export function ClubesPage() {
               <img src="https://via.placeholder.com/150x100" alt="Clube" className="clube-img" />
               <span className="tipo">{club.tipo}</span>
               <h3>{club.nome}</h3>
-              <button className="entrar">Entrar</button>
+              <button className="entrar" onClick={() => navigate(`/clube/${club._id}`)}> Entrar </button>
               <p className="genero">📚 {club.genero}</p>
             </div>
           ))}

@@ -1,15 +1,46 @@
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { Navbar } from "./Navbar";
 import "./ClubePage.css";
 
+type Clube = {
+  nome: string;
+  descricao: string;
+  genero: string;
+  tipo: string;
+  formato: string;
+  frequencia: string;
+  limite: number;
+  regras: string;
+  politica: string;
+};
+
 export function ClubePage() {
+  const { id } = useParams();
+  const [clube, setClube] = useState<Clube | null>(null);
+
+  useEffect(() => {
+    const fetchClube = async () => {
+      try {
+        const res = await fetch(`http://localhost:4000/api/clubes/${id}`);
+        const data = await res.json();
+        setClube(data);
+      } catch (err) {
+        console.error("Erro ao buscar clube:", err);
+      }
+    };
+
+    fetchClube();
+  }, [id]);
+
   return (
     <>
       <Navbar />
 
       <header className="clubes-hero">
-        <h1>Clube Café com Livros</h1>
+        <h1>{clube?.nome || "Carregando..."}</h1>
         <p className="subheading">
-          Um espaço para amantes da literatura contemporânea se reunirem e discutirem grandes obras.
+          {clube?.descricao || "Buscando informações do clube..."}
         </p>
       </header>
 
@@ -17,11 +48,11 @@ export function ClubePage() {
         <section className="clube-info">
           <h2>Informações Gerais</h2>
           <ul>
-            <li><strong>Gênero:</strong> Romance contemporâneo</li>
-            <li><strong>Tipo:</strong> Público</li>
-            <li><strong>Formato:</strong> Online</li>
-            <li><strong>Frequência:</strong> Semanal</li>
-            <li><strong>Participantes:</strong> 14 / 20</li>
+            <li><strong>Gênero:</strong> {clube?.genero || "—"}</li>
+            <li><strong>Tipo:</strong> {clube?.tipo || "—"}</li>
+            <li><strong>Formato:</strong> {clube?.formato || "—"}</li>
+            <li><strong>Frequência:</strong> {clube?.frequencia || "—"}</li>
+            <li><strong>Participantes:</strong> — / {clube?.limite || "—"}</li>
           </ul>
         </section>
 
@@ -71,13 +102,19 @@ export function ClubePage() {
         <section className="clube-regras">
           <h2>Regras do Clube</h2>
           <ul>
-            <li>Respeito é essencial.</li>
-            <li>Evite spoilers sem aviso.</li>
-            <li>Participação nos encontros é incentivada.</li>
+            {clube?.regras ? (
+              clube.regras.split(".").map((r, i) => r.trim() && <li key={i}>{r.trim()}.</li>)
+            ) : (
+              <>
+                <li>Respeito é essencial.</li>
+                <li>Evite spoilers sem aviso.</li>
+                <li>Participação nos encontros é incentivada.</li>
+              </>
+            )}
           </ul>
 
           <h3>Política de Faltas</h3>
-          <p>3 faltas consecutivas sem aviso resultam em remoção do clube.</p>
+          <p>{clube?.politica || "3 faltas consecutivas sem aviso resultam em remoção do clube."}</p>
         </section>
 
         <section className="clube-participantes">
