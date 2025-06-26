@@ -16,3 +16,12 @@ export async function criarClube(req, res) {
     res.status(500).json({ message: 'Erro ao criar clube.' });
   }
 }
+
+export async function listarClubes(req, res) {
+  try {
+    const clubes = await Club.find().populate('moderador', 'username');
+    res.json(clubes);
+  } catch (err) {
+    res.status(500).json({ message: 'Erro ao buscar clubes.' });
+  }
+}

@@ -1,41 +1,48 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./Clubes.css";
 import { useSearchParams } from "react-router-dom";
 import { Navbar } from "./Navbar";
+
+type Clube = {
+  nome: string;
+  tipo: string;
+  genero: string;
+  imagem?: string;
+};
 
 export function ClubesPage() {
   const [searchParams] = useSearchParams();
   const tabParam = searchParams.get("tab");
   const [tab, setTab] = useState(tabParam || "encontrar");
   const [showEncontrosDropdown, setShowEncontrosDropdown] = useState(false);
+  const [clubes, setClubes] = useState<Clube[]>([]);
 
-  const clubes = Array(8).fill({
-    titulo: "Clube do Terror",
-    genero: "Ficção, terror",
-    tipo: "Público",
-    membros: 9,
-    imagem: "https://via.placeholder.com/150x100",
-  });
+  useEffect(() => {
+    const fetchClubes = async () => {
+      try {
+        const res = await fetch("http://localhost:4000/api/clubes");
+        const data = await res.json();
+        setClubes(data);
+      } catch (err) {
+        console.error("Erro ao buscar clubes:", err);
+      }
+    };
+
+    fetchClubes();
+  }, []);
 
   return (
     <>
       <Navbar />
-      
       <div className="clubes-hero">
         <h1>Encontre seu Club</h1>
         <p className="subheading">Sua próxima história inesquecível começa aqui.</p>
 
         <div className="tabs">
-          <button
-            className={tab === "encontrar" ? "active" : ""}
-            onClick={() => setTab("encontrar")}
-          >
+          <button className={tab === "encontrar" ? "active" : ""} onClick={() => setTab("encontrar")}>
             Encontrar Clubes
           </button>
-          <button
-            className={tab === "meus" ? "active" : ""}
-            onClick={() => setTab("meus")}
-          >
+          <button className={tab === "meus" ? "active" : ""} onClick={() => setTab("meus")}>
             Meus Clubes
           </button>
         </div>
@@ -53,10 +60,7 @@ export function ClubesPage() {
             <button>🎭 Gênero Literário</button>
             <button>🔒 Privacidade</button>
             <div className="dropdown-wrapper">
-              <button
-                className="dropdown-toggle"
-                onClick={() => setShowEncontrosDropdown(!showEncontrosDropdown)}
-              >
+              <button className="dropdown-toggle" onClick={() => setShowEncontrosDropdown(!showEncontrosDropdown)}>
                 🧍‍♂️ Encontros
               </button>
               {showEncontrosDropdown && (
@@ -75,9 +79,9 @@ export function ClubesPage() {
         <div className="clubes-grid">
           {clubes.map((club, index) => (
             <div className="clube-card" key={index}>
-              <img src={club.imagem} alt="Clube" className="clube-img" />
+              <img src="https://via.placeholder.com/150x100" alt="Clube" className="clube-img" />
               <span className="tipo">{club.tipo}</span>
-              <h3>{club.titulo}</h3>
+              <h3>{club.nome}</h3>
               <button className="entrar">Entrar</button>
               <p className="genero">📚 {club.genero}</p>
             </div>
