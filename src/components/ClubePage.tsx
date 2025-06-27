@@ -14,6 +14,7 @@ type Clube = {
   limite: number;
   regras: string;
   politica: string;
+  moderador: string;
 };
 
 export function ClubePage() {
@@ -34,11 +35,11 @@ export function ClubePage() {
     fetchClube();
   }, [id]);
 
-  const participarDoClube = async (clubeId: string) => {
+const participarDoClube = async (clubeId: string) => {
   try {
     const token = localStorage.getItem("token");
-    const res = await fetch(`http://localhost:4000/api/clubes/${clubeId}/participar`, {
-      method: "POST",
+    const res = await fetch(`http://localhost:4000/api/clubes/${clubeId}/entrar`, {
+      method: "POST", // corrigido para chamar a rota certa
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`
@@ -48,7 +49,7 @@ export function ClubePage() {
     const data = await res.json();
     if (res.ok) {
       alert("Você agora faz parte do clube!");
-      // opcionalmente recarregar a página
+      // Você pode atualizar a UI ou recarregar a página se quiser
     } else {
       alert(data.message || "Erro ao entrar no clube.");
     }
@@ -56,7 +57,6 @@ export function ClubePage() {
     console.error("Erro ao entrar no clube:", error);
   }
 };
-
 
   return (
     <>

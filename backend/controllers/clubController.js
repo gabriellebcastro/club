@@ -48,7 +48,23 @@ export async function solicitarEntrada(req, res) {
       return res.status(400).json({ message: 'Este clube é público, não é necessário solicitar entrada.' });
     }
 
-    // Criar notificação para o moderador
+    // 🔒 Verificar se o usuário é o moderador do clube
+    if (clube.moderador.toString() === req.user.id) {
+      return res.status(403).json({ message: 'Você é o moderador deste clube e não pode solicitar entrada.' });
+    }
+
+    // 🔍 Verificar se o usuário já fez uma solicitação para este clube
+    const jaSolicitou = await Notificacao.findOne({
+      clube: clube._id,
+      remetente: req.user.id,
+      tipo: 'solicitacao_entrada',
+    });
+
+    if (jaSolicitou) {
+      return res.status(400).json({ message: 'Você já solicitou entrada neste clube.' });
+    }
+
+    // ✅ Criar notificação para o moderador
     const novaNotificacao = new Notificacao({
       destinatario: clube.moderador,
       tipo: 'solicitacao_entrada',
@@ -63,5 +79,118 @@ export async function solicitarEntrada(req, res) {
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Erro ao solicitar entrada.' });
+  }
+}
+
+export async function listarSolicitacoes(req, res) {
+  try {
+    console.log("🟡 Usuário autenticado:", req.user);
+    console.log("🔍 Buscando notificações para o destinatário:", req.user.id);
+
+    const notificacoes = await Notificacao.find({
+      destinatario: req.user.id,
+      tipo: 'solicitacao_entrada'
+    })
+      .sort({ createdAt: -1 })
+      .populate('remetente', 'username')
+      .populate('clube', 'nome');
+
+    console.log("📬 Notificações encontradas:", notificacoes.length);
+
+    const resposta = notificacoes.map(n => ({
+      _id: n._id,
+      mensagem: `${n.remetente.username} solicitou entrada no clube ${n.clube.nome}`,
+      tipo: n.tipo,
+    }));
+
+    res.json(resposta);
+  } catch (err) {
+    console.error('❌ Erro ao buscar notificações:', err);
+    res.status(500).json({ message: 'Erro ao buscar notificações.' });
+  }
+}
+
+export async function entrarNoClube(req, res) {
+  try {
+    const clube = await Club.findById(req.params.id);
+
+    if (!clube) return res.status(404).json({ message: 'Clube não encontrado.' });
+
+    // ✅ Verifica se o campo moderador existe
+    if (!clube.moderador) {
+      return res.status(400).json({ message: 'Clube inválido: sem moderador definido.' });
+    }
+
+    // 🔒 Impede o moderador de entrar como membro
+    if (clube.moderador.toString() === req.user.id) {
+      return res.status(403).json({ message: 'Você é o moderador deste clube.' });
+    }
+
+    // Aqui você pode adicionar o usuário como membro (ainda será implementado em detalhes)
+    res.status(200).json({ message: 'Entrada no clube registrada (lógica de associação pendente).' });
+
+  } catch (err) {
+    console.error("Erro ao entrar no clube público:", err);
+    res.status(500).json({ message: 'Erro ao entrar no clube.' });
+  }
+}
+
+export async function aceitarSolicitacao(req, res) {
+  try {
+    const notificacao = await Notificacao.findById(req.params.id).populate('clube remetente');
+
+    if (!notificacao) {
+      return res.status(404).json({ message: "Notificação não encontrada." });
+    }
+
+    const clube = notificacao.clube;
+
+    // Verifica se quem está aceitando é o moderador do clube
+    if (clube.moderador.toString() !== req.user.id) {
+      return res.status(403).json({ message: "Você não tem permissão para aceitar essa solicitação." });
+    }
+
+    const idSolicitante = notificacao.remetente._id;
+
+    // Adiciona como membro se ainda não for
+    if (!clube.membros.includes(idSolicitante)) {
+      clube.membros.push(idSolicitante);
+      await clube.save();
+    }
+
+    // Remove a notificação após aceitar
+    await Notificacao.findByIdAndDelete(notificacao._id);
+
+    return res.status(200).json({ message: "Solicitação aceita. Usuário agora é membro do clube." });
+
+  } catch (err) {
+    console.error("❌ Erro ao aceitar solicitação:", err);
+    return res.status(500).json({ message: "Erro ao processar solicitação." });
+  }
+}
+
+export async function negarSolicitacao(req, res) {
+  try {
+    const notificacao = await Notificacao.findById(req.params.id).populate('clube remetente');
+
+    if (!notificacao) {
+      return res.status(404).json({ message: "Notificação não encontrada." });
+    }
+
+    const clube = notificacao.clube;
+
+    // Verifica se quem está negando é o moderador do clube
+    if (clube.moderador.toString() !== req.user.id) {
+      return res.status(403).json({ message: "Você não tem permissão para negar essa solicitação." });
+    }
+
+    // Remove a notificação após negar
+    await Notificacao.findByIdAndDelete(notificacao._id);
+
+    return res.status(200).json({ message: "Solicitação negada com sucesso." });
+
+  } catch (err) {
+    console.error("Erro ao negar solicitação:", err);
+    return res.status(500).json({ message: "Erro ao processar a negação da solicitação." });
   }
 }

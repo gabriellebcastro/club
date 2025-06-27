@@ -18,6 +18,14 @@ const clubSchema = new mongoose.Schema({
     ref: 'User',
     required: true,
   },
+  pendentes: [{ 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'User' 
+  }],
+  membros: [{ 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'User' 
+  }]
 }, { timestamps: true });
 
 const Club = mongoose.model('Club', clubSchema);

@@ -74,24 +74,31 @@ export function CreateClub() {
               <label>Gênero</label>
               <select name="genero" onChange={handleInputChange}>
                 <option value="">Escolha o gênero</option>
-                <option>Romance</option>
-                <option>Terror</option>
+                <option value="Romance">Romance</option>
+                <option value="Terror">Terror</option>
               </select>
+
               <label>Tipo</label>
               <select name="tipo" onChange={handleInputChange}>
-                <option>Público</option>
-                <option>Privado</option>
+                <option value="">Escolha o tipo</option>
+                <option value="Público">Público</option>
+                <option value="Privado">Privado</option>
               </select>
+
               <label>Formato</label>
               <select name="formato" onChange={handleInputChange}>
-                <option>Presencial</option>
-                <option>Online</option>
+                <option value="">Escolha o formato</option>
+                <option value="Presencial">Presencial</option>
+                <option value="Online">Online</option>
               </select>
+
               <label>Frequência</label>
               <select name="frequencia" onChange={handleInputChange}>
-                <option>Semanal</option>
-                <option>Mensal</option>
+                <option value="">Escolha a frequência</option>
+                <option value="Semanal">Semanal</option>
+                <option value="Mensal">Mensal</option>
               </select>
+
               <label>Limite</label>
               <input type="number" name="limite" onChange={handleInputChange} />
               <label>Faixa Etária</label>

@@ -87,3 +87,42 @@
 .navbar-dropdown-menu .dropdown-item:last-child {
   border-bottom: none;
 }
+
+.notificacoes-dropdown {
+  position: absolute;
+  right: 60px;
+  top: 60px;
+  background-color: white;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  padding: 10px;
+  width: 280px;
+  z-index: 100;
+  border-radius: 6px;
+}
+
+.notificacao-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+  padding: 6px 0;
+  font-size: 0.9rem;
+  gap: 8px;
+}
+
+.btn-aceitar {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  color: #28a745;
+  cursor: pointer;
+}
+
+.btn-negar {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  color: red;
+  cursor: pointer;
+  margin-left: 8px;
+}
