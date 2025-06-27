@@ -4,6 +4,7 @@ import { Navbar } from "./Navbar";
 import "./ClubePage.css";
 
 type Clube = {
+  _id: string;
   nome: string;
   descricao: string;
   genero: string;
@@ -33,6 +34,30 @@ export function ClubePage() {
     fetchClube();
   }, [id]);
 
+  const participarDoClube = async (clubeId: string) => {
+  try {
+    const token = localStorage.getItem("token");
+    const res = await fetch(`http://localhost:4000/api/clubes/${clubeId}/participar`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    const data = await res.json();
+    if (res.ok) {
+      alert("Você agora faz parte do clube!");
+      // opcionalmente recarregar a página
+    } else {
+      alert(data.message || "Erro ao entrar no clube.");
+    }
+  } catch (error) {
+    console.error("Erro ao entrar no clube:", error);
+  }
+};
+
+
   return (
     <>
       <Navbar />
@@ -43,6 +68,23 @@ export function ClubePage() {
           {clube?.descricao || "Buscando informações do clube..."}
         </p>
       </header>
+
+      {clube?.tipo === "Público" && (
+          <div className="btn-container">
+            <button
+              className="btn-fazer-parte"
+              onClick={() => {
+                if (window.confirm("Deseja entrar neste clube?")) {
+                  // chamada para API para se adicionar ao clube diretamente
+                  participarDoClube(clube._id);
+                }
+              }}
+            >
+              Fazer parte do clube
+            </button>
+          </div>
+        )}
+
 
       <main className="clube-container">
         <section className="clube-info">

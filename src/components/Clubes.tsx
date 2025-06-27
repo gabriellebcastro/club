@@ -35,6 +35,29 @@ export function ClubesPage() {
     fetchClubes();
   }, []);
 
+  const solicitarEntrada = async (clubeId: string) => {
+  try {
+    const token = localStorage.getItem("token"); // Ajuste conforme seu auth
+    const res = await fetch(`http://localhost:4000/api/clubes/${clubeId}/solicitar`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    const data = await res.json();
+    if (res.ok) {
+      alert("Solicitação enviada ao moderador!");
+    } else {
+      alert(data.message || "Erro ao solicitar entrada.");
+    }
+  } catch (error) {
+    console.error("Erro ao solicitar entrada:", error);
+    alert("Erro ao solicitar entrada.");
+  }
+};
+
   return (
     <>
       <Navbar />
@@ -86,7 +109,20 @@ export function ClubesPage() {
               <img src="https://via.placeholder.com/150x100" alt="Clube" className="clube-img" />
               <span className="tipo">{club.tipo}</span>
               <h3>{club.nome}</h3>
-              <button className="entrar" onClick={() => navigate(`/clube/${club._id}`)}> Entrar </button>
+              <button
+                className="entrar"
+                onClick={() => {
+                  if (club.tipo === "Público") {
+                    navigate(`/clube/${club._id}`);
+                  } else {
+                    if (window.confirm("Este clube é privado. Deseja solicitar entrada?")) {
+                      solicitarEntrada(club._id);
+                    }
+                  }
+                }}
+              >
+                Entrar
+              </button>
               <p className="genero">📚 {club.genero}</p>
             </div>
           ))}
