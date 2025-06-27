@@ -1,9 +1,7 @@
 import { useState, useEffect } from "react";
 import "./Clubes.css";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { Navbar } from "./Navbar";
-import { useNavigate } from "react-router-dom";
-
 
 type Clube = {
   _id: string;
@@ -11,6 +9,9 @@ type Clube = {
   tipo: string;
   genero: string;
   imagem?: string;
+  membros?: string[];
+  ehMembro?: boolean;
+  ehModerador?: boolean;
 };
 
 export function ClubesPage() {
@@ -22,10 +23,17 @@ export function ClubesPage() {
   const [clubes, setClubes] = useState<Clube[]>([]);
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+
     const fetchClubes = async () => {
       try {
-        const res = await fetch("http://localhost:4000/api/clubes");
+        const res = await fetch("http://localhost:4000/api/clubes", {
+          headers: {
+            Authorization: token ? `Bearer ${token}` : "",
+          },
+        });
         const data = await res.json();
+        console.log("Dados recebidos do backend:", data);
         setClubes(data);
       } catch (err) {
         console.error("Erro ao buscar clubes:", err);
@@ -36,40 +44,51 @@ export function ClubesPage() {
   }, []);
 
   const solicitarEntrada = async (clubeId: string) => {
-  try {
-    const token = localStorage.getItem("token"); // Ajuste conforme seu auth
-    const res = await fetch(`http://localhost:4000/api/clubes/${clubeId}/solicitar`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
-      }
-    });
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(
+        `http://localhost:4000/api/clubes/${clubeId}/solicitar`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-    const data = await res.json();
-    if (res.ok) {
-      alert("Solicitação enviada ao moderador!");
-    } else {
-      alert(data.message || "Erro ao solicitar entrada.");
+      const data = await res.json();
+      if (res.ok) {
+        alert("Solicitação enviada ao moderador!");
+      } else {
+        alert(data.message || "Erro ao solicitar entrada.");
+      }
+    } catch (error) {
+      console.error("Erro ao solicitar entrada:", error);
+      alert("Erro ao solicitar entrada.");
     }
-  } catch (error) {
-    console.error("Erro ao solicitar entrada:", error);
-    alert("Erro ao solicitar entrada.");
-  }
-};
+  };
 
   return (
     <>
       <Navbar />
       <div className="clubes-hero">
         <h1>Encontre seu Club</h1>
-        <p className="subheading">Sua próxima história inesquecível começa aqui.</p>
+        <p className="subheading">
+          Sua próxima história inesquecível começa aqui.
+        </p>
 
         <div className="tabs">
-          <button className={tab === "encontrar" ? "active" : ""} onClick={() => setTab("encontrar")}>
+          <button
+            className={tab === "encontrar" ? "active" : ""}
+            onClick={() => setTab("encontrar")}
+          >
             Encontrar Clubes
           </button>
-          <button className={tab === "meus" ? "active" : ""} onClick={() => setTab("meus")}>
+          <button
+            className={tab === "meus" ? "active" : ""}
+            onClick={() => setTab("meus")}
+          >
             Meus Clubes
           </button>
         </div>
@@ -87,7 +106,10 @@ export function ClubesPage() {
             <button>🎭 Gênero Literário</button>
             <button>🔒 Privacidade</button>
             <div className="dropdown-wrapper">
-              <button className="dropdown-toggle" onClick={() => setShowEncontrosDropdown(!showEncontrosDropdown)}>
+              <button
+                className="dropdown-toggle"
+                onClick={() => setShowEncontrosDropdown(!showEncontrosDropdown)}
+              >
                 🧍‍♂️ Encontros
               </button>
               {showEncontrosDropdown && (
@@ -104,28 +126,42 @@ export function ClubesPage() {
         </div>
 
         <div className="clubes-grid">
-          {clubes.map((club, index) => (
-            <div className="clube-card" key={index}>
-              <img src="https://via.placeholder.com/150x100" alt="Clube" className="clube-img" />
-              <span className="tipo">{club.tipo}</span>
-              <h3>{club.nome}</h3>
-              <button
-                className="entrar"
-                onClick={() => {
-                  if (club.tipo === "Público") {
-                    navigate(`/clube/${club._id}`);
-                  } else {
-                    if (window.confirm("Este clube é privado. Deseja solicitar entrada?")) {
-                      solicitarEntrada(club._id);
+          {clubes.map((club, index) => {
+            return (
+              <div className="clube-card" key={index}>
+                <img
+                  src="https://via.placeholder.com/150x100"
+                  alt="Clube"
+                  className="clube-img"
+                />
+                <span className="tipo">{club.tipo}</span>
+                <h3>{club.nome}</h3>
+                <button
+                  className="entrar"
+                  onClick={() => {
+                    if (
+                      club.ehModerador ||
+                      club.ehMembro ||
+                      club.tipo === "Público"
+                    ) {
+                      navigate(`/clube/${club._id}`);
+                    } else {
+                      if (
+                        window.confirm(
+                          "Este clube é privado. Deseja solicitar entrada?"
+                        )
+                      ) {
+                        solicitarEntrada(club._id);
+                      }
                     }
-                  }
-                }}
-              >
-                Entrar
-              </button>
-              <p className="genero">📚 {club.genero}</p>
-            </div>
-          ))}
+                  }}
+                >
+                  Entrar
+                </button>
+                <p className="genero">📚 {club.genero}</p>
+              </div>
+            );
+          })}
         </div>
       </div>
     </>

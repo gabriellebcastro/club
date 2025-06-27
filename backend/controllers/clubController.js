@@ -20,9 +20,43 @@ export async function criarClube(req, res) {
 
 export async function listarClubes(req, res) {
   try {
-    const clubes = await Club.find().populate('moderador', 'username');
-    res.json(clubes);
+    const clubes = await Club.find()
+      .populate('moderador', 'username')
+      .select('nome tipo genero imagem membros moderador');
+
+    const userId = req.user?.id || null;
+
+    const clubesComStatus = clubes.map(clube => {
+      const membros = clube.membros || [];
+
+      const ehMembro = Boolean(userId) && membros.some(m => m.toString() === userId.toString());
+
+      console.log('Moderador _id:', clube.moderador?._id);
+      console.log('Tipo moderador _id:', typeof clube.moderador?._id);
+      console.log('userId:', userId);
+      console.log('Tipo userId:', typeof userId);
+
+      const ehModerador = Boolean(userId) && (
+        (clube.moderador?._id?.toString() === userId.toString()) ||
+        (typeof clube.moderador === 'string' && clube.moderador === userId.toString())
+      );
+
+      console.log(`🎯 Clube: ${clube.nome}`);
+      console.log(`   🔹 ehMembro:`, ehMembro, typeof ehMembro);
+      console.log(`   🔹 ehModerador:`, ehModerador, typeof ehModerador);
+      console.log(`   🔸 Membros: ${membros.map(m => m.toString()).join(', ')}`);
+      console.log(`   🔸 Moderador ID: ${clube.moderador?._id || clube.moderador}`);
+
+      return {
+        ...clube.toObject(),
+        ehMembro,
+        ehModerador,
+      };
+    });
+
+    res.json(clubesComStatus);
   } catch (err) {
+    console.error("Erro ao buscar clubes:", err);
     res.status(500).json({ message: 'Erro ao buscar clubes.' });
   }
 }
