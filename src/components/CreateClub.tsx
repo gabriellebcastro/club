@@ -1,10 +1,13 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./CreateClub.css";
 import { Navbar } from "./Navbar";
 
 export function CreateClub() {
   const [etapa, setEtapa] = useState(1);
   const [formData, setFormData] = useState<Record<string, string | number>>({});
+  const navigate = useNavigate(); // ✅ isso que está faltando
+
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -39,7 +42,7 @@ export function CreateClub() {
       if (response.ok) {
         alert("Clube criado com sucesso!");
         console.log("Novo clube:", data);
-        // Redirecionar ou limpar formulário, se desejar
+        navigate("/home");
       } else {
         alert(data.message || "Erro ao criar clube.");
       }
