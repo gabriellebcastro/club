@@ -14,7 +14,9 @@ type Clube = {
   limite: number;
   regras: string;
   politica: string;
-  moderador: string;
+  moderador: string | { _id: string };
+  ehModerador?: boolean;
+  ehMembro?: boolean;
 };
 
 export function ClubePage() {
@@ -24,7 +26,12 @@ export function ClubePage() {
   useEffect(() => {
     const fetchClube = async () => {
       try {
-        const res = await fetch(`http://localhost:4000/api/clubes/${id}`);
+        const token = localStorage.getItem("token");
+        const res = await fetch(`http://localhost:4000/api/clubes/${id}`, {
+          headers: {
+            Authorization: token ? `Bearer ${token}` : "",
+          },
+        });
         const data = await res.json();
         setClube(data);
       } catch (err) {
@@ -35,28 +42,28 @@ export function ClubePage() {
     fetchClube();
   }, [id]);
 
-const participarDoClube = async (clubeId: string) => {
-  try {
-    const token = localStorage.getItem("token");
-    const res = await fetch(`http://localhost:4000/api/clubes/${clubeId}/entrar`, {
-      method: "POST", // corrigido para chamar a rota certa
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
-      }
-    });
+  const participarDoClube = async (clubeId: string) => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`http://localhost:4000/api/clubes/${clubeId}/entrar`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-    const data = await res.json();
-    if (res.ok) {
-      alert("Você agora faz parte do clube!");
-      // Você pode atualizar a UI ou recarregar a página se quiser
-    } else {
-      alert(data.message || "Erro ao entrar no clube.");
+      const data = await res.json();
+      if (res.ok) {
+        alert("Você agora faz parte do clube!");
+        setClube(prev => (prev ? { ...prev, ehMembro: true } : prev));
+      } else {
+        alert(data.message || "Erro ao entrar no clube.");
+      }
+    } catch (error) {
+      console.error("Erro ao entrar no clube:", error);
     }
-  } catch (error) {
-    console.error("Erro ao entrar no clube:", error);
-  }
-};
+  };
 
   return (
     <>
@@ -64,27 +71,23 @@ const participarDoClube = async (clubeId: string) => {
 
       <header className="clubes-hero">
         <h1>{clube?.nome || "Carregando..."}</h1>
-        <p className="subheading">
-          {clube?.descricao || "Buscando informações do clube..."}
-        </p>
+        <p className="subheading">{clube?.descricao || "Buscando informações do clube..."}</p>
       </header>
 
-      {clube?.tipo === "Público" && (
-          <div className="btn-container">
-            <button
-              className="btn-fazer-parte"
-              onClick={() => {
-                if (window.confirm("Deseja entrar neste clube?")) {
-                  // chamada para API para se adicionar ao clube diretamente
-                  participarDoClube(clube._id);
-                }
-              }}
-            >
-              Fazer parte do clube
-            </button>
-          </div>
-        )}
-
+      {clube?.tipo === "Público" && !clube.ehMembro && (
+        <div className="btn-container">
+          <button
+            className="btn-fazer-parte"
+            onClick={() => {
+              if (window.confirm("Deseja entrar neste clube?")) {
+                participarDoClube(clube._id);
+              }
+            }}
+          >
+            Fazer parte do clube
+          </button>
+        </div>
+      )}
 
       <main className="clube-container">
         <section className="clube-info">
@@ -121,24 +124,33 @@ const participarDoClube = async (clubeId: string) => {
         <section className="clube-eventos">
           <div className="eventos-header">
             <h2>📅 Próximos Eventos</h2>
-            <button className="btn-criar-evento">+ Criar Evento</button>
+
+            {clube?.ehModerador ? (
+              <button className="btn-criar-evento">+ Criar Evento</button>
+            ) : clube?.ehMembro ? (
+              <p>Próximo evento: 28/06/2025</p>
+            ) : (
+              <p>Entre no clube para ver os eventos.</p>
+            )}
           </div>
 
-          <div className="eventos-lista">
-            <div className="evento-card">
-              <h3>Discussão da Parte 1</h3>
-              <p><strong>Data:</strong> 28/06/2025</p>
-              <p><strong>Horário:</strong> 19:00</p>
-              <p><strong>Plataforma:</strong> Google Meet</p>
-            </div>
+          {(clube?.ehModerador || clube?.ehMembro) && (
+            <div className="eventos-lista">
+              <div className="evento-card">
+                <h3>Discussão da Parte 1</h3>
+                <p><strong>Data:</strong> 28/06/2025</p>
+                <p><strong>Horário:</strong> 19:00</p>
+                <p><strong>Plataforma:</strong> Google Meet</p>
+              </div>
 
-            <div className="evento-card">
-              <h3>Encontro Literário Especial</h3>
-              <p><strong>Data:</strong> 05/07/2025</p>
-              <p><strong>Horário:</strong> 20:00</p>
-              <p><strong>Plataforma:</strong> Zoom</p>
+              <div className="evento-card">
+                <h3>Encontro Literário Especial</h3>
+                <p><strong>Data:</strong> 05/07/2025</p>
+                <p><strong>Horário:</strong> 20:00</p>
+                <p><strong>Plataforma:</strong> Zoom</p>
+              </div>
             </div>
-          </div>
+          )}
         </section>
 
         <section className="clube-regras">
@@ -165,7 +177,6 @@ const participarDoClube = async (clubeId: string) => {
             <div className="membro">📚 Ana Paula</div>
             <div className="membro">📚 João Silva</div>
             <div className="membro">📚 Carla Mendes</div>
-            {/* Adicione mais conforme necessário */}
           </div>
         </section>
       </main>

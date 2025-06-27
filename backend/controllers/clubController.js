@@ -64,9 +64,25 @@ export async function listarClubes(req, res) {
 export async function obterClubePorId(req, res) {
   try {
     const clube = await Club.findById(req.params.id).populate('moderador', 'username');
+
     if (!clube) return res.status(404).json({ message: 'Clube não encontrado' });
 
-    res.json(clube);
+    const userId = req.user?.id || null;
+
+    const ehModerador = Boolean(userId) && (
+      (clube.moderador?._id?.toString() === userId.toString()) ||
+      (typeof clube.moderador === 'string' && clube.moderador === userId.toString())
+    );
+
+    const ehMembro = Boolean(userId) && (
+      clube.membros?.some(m => m.toString() === userId.toString())
+    );
+
+    return res.json({
+      ...clube.toObject(),
+      ehModerador,
+      ehMembro,
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Erro ao buscar clube.' });
