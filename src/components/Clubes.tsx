@@ -22,26 +22,32 @@ export function ClubesPage() {
   const [showEncontrosDropdown, setShowEncontrosDropdown] = useState(false);
   const [clubes, setClubes] = useState<Clube[]>([]);
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
+useEffect(() => {
+  const token = localStorage.getItem("token");
 
-    const fetchClubes = async () => {
-      try {
-        const res = await fetch("http://localhost:4000/api/clubes", {
-          headers: {
-            Authorization: token ? `Bearer ${token}` : "",
-          },
-        });
-        const data = await res.json();
-        console.log("Dados recebidos do backend:", data);
-        setClubes(data);
-      } catch (err) {
-        console.error("Erro ao buscar clubes:", err);
-      }
-    };
+  const fetchClubes = async () => {
+    try {
+      const endpoint =
+        tab === "meus"
+          ? "http://localhost:4000/api/meus-clubes"
+          : "http://localhost:4000/api/clubes";
 
-    fetchClubes();
-  }, []);
+      const res = await fetch(endpoint, {
+        headers: {
+          Authorization: token ? `Bearer ${token}` : "",
+        },
+      });
+
+      const data = await res.json();
+      console.log(`📥 Dados (${tab}):`, data);
+      setClubes(data);
+    } catch (err) {
+      console.error("Erro ao buscar clubes:", err);
+    }
+  };
+
+  fetchClubes();
+}, [tab]);
 
   const solicitarEntrada = async (clubeId: string) => {
     try {

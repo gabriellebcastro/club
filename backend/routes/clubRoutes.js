@@ -1,5 +1,5 @@
 import express from 'express';
-import { criarClube, listarClubes, obterClubePorId, solicitarEntrada, entrarNoClube, listarSolicitacoes, aceitarSolicitacao, negarSolicitacao } from '../controllers/clubController.js';
+import { criarClube, listarClubes, obterClubePorId, solicitarEntrada, entrarNoClube, listarSolicitacoes, aceitarSolicitacao, negarSolicitacao, listarMeusClubes } from '../controllers/clubController.js';
 import { autenticar } from '../middleware/auth.js';
 
 const router = express.Router();
@@ -11,5 +11,6 @@ router.post('/clubes/:id/entrar', autenticar, entrarNoClube);
 router.get('/notificacoes', autenticar, listarSolicitacoes);
 router.post('/notificacoes/:id/aceitar', autenticar, aceitarSolicitacao);
 router.post('/notificacoes/:id/negar', autenticar, negarSolicitacao);
+router.get('/meus-clubes', autenticar, listarMeusClubes);
 
 export default router;

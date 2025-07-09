@@ -244,3 +244,26 @@ export async function negarSolicitacao(req, res) {
     return res.status(500).json({ message: "Erro ao processar a negação da solicitação." });
   }
 }
+
+export async function listarMeusClubes(req, res) {
+  try {
+    const userId = req.user.id;
+
+    const clubes = await Club.find({ membros: userId })
+      .populate('moderador', 'username')
+      .select('nome tipo genero imagem membros moderador');
+
+    const clubesComStatus = clubes.map(clube => {
+      return {
+        ...clube.toObject(),
+        ehMembro: true,
+        ehModerador: clube.moderador._id.toString() === userId,
+      };
+    });
+
+    res.json(clubesComStatus);
+  } catch (err) {
+    console.error("Erro ao listar meus clubes:", err);
+    res.status(500).json({ message: "Erro ao listar seus clubes." });
+  }
+}
