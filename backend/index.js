@@ -5,6 +5,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import clubRoutes from './routes/clubRoutes.js';
+import eventoRoutes from './routes/eventoRoutes.js';
 
 dotenv.config();
 
@@ -12,6 +13,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use('/api', clubRoutes);
+app.use('/api', eventoRoutes);
 
 // Conectar ao MongoDB
 mongoose.connect(process.env.MONGO_URI)

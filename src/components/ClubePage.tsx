@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { Navbar } from "./Navbar";
 import "./ClubePage.css";
 
@@ -21,6 +21,7 @@ type Clube = {
 
 export function ClubePage() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [clube, setClube] = useState<Clube | null>(null);
 
   useEffect(() => {
@@ -126,7 +127,12 @@ export function ClubePage() {
             <h2>📅 Próximos Eventos</h2>
 
             {clube?.ehModerador ? (
-              <button className="btn-criar-evento">+ Criar Evento</button>
+              <button
+                className="btn-criar-evento"
+                onClick={() => navigate(`/clubes/${clube._id}/eventos/novo`)} // ✅ REDIRECIONAMENTO AQUI
+              >
+                + Criar Evento
+              </button>
             ) : clube?.ehMembro ? (
               <p>Próximo evento: 28/06/2025</p>
             ) : (
