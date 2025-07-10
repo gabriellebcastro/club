@@ -8,6 +8,7 @@ import { CreateClub } from "./components/CreateClub";
 import { ClubePage } from "./components/ClubePage";
 import { UserProfile } from "./components/UserProfile";
 import { CreateEvent } from "./components/CreateEvent";
+import { EventosPage } from "./components/EventosPage";
 
 function App() {
   return (
@@ -22,7 +23,8 @@ function App() {
         <Route path="/create" element={<CreateClub />} />
         <Route path="/clube/:id" element={<ClubePage />} />
         <Route path="/profile" element={<UserProfile />} />
-        <Route path="/clubes/:id/eventos/novo" element={<CreateEvent />} /> {/* ✅ Rota adicionada */}
+        <Route path="/clubes/:id/eventos/novo" element={<CreateEvent />} />
+        <Route path="/eventos" element={<EventosPage />} />
       </Routes>
     </Router>
   );

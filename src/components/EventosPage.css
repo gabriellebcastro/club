@@ -1,0 +1,58 @@
+.eventos-page-container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.eventos-title {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  color: #333;
+}
+
+.sem-eventos {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #666;
+}
+
+.eventos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.evento-card-grid {
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 1.2rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease;
+}
+
+.evento-card-grid:hover {
+  transform: scale(1.02);
+}
+
+.evento-clube-header {
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 0.5rem;
+}
+
+.evento-card-grid h2 {
+  font-size: 1.3rem;
+  margin: 0.2rem 0 0.5rem;
+}
+
+.evento-card-grid p {
+  margin: 0.3rem 0;
+  font-size: 0.95rem;
+}
+
+.descricao {
+  font-style: italic;
+  color: #666;
+}

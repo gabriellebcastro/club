@@ -47,3 +47,28 @@ export async function listarEventosPorClube(req, res) {
     res.status(500).json({ message: "Erro ao buscar eventos." });
   }
 }
+
+export async function listarEventosDoUsuario(req, res) {
+  try {
+    const userId = req.user.id;
+
+    // 1. Buscar clubes que o usuário participa
+    const clubes = await Club.find({ membros: userId }).select("_id");
+
+    const clubesIds = clubes.map(clube => clube._id);
+
+    // 2. Buscar eventos futuros desses clubes
+    const hoje = new Date();
+    const eventos = await Evento.find({
+      clube: { $in: clubesIds },
+      data: { $gte: hoje }
+    })
+      .populate("clube", "nome imagem") // retorna os dados do clube
+      .sort({ data: 1 });
+
+    res.json(eventos);
+  } catch (err) {
+    console.error("Erro ao listar eventos do usuário:", err);
+    res.status(500).json({ message: "Erro ao buscar eventos do usuário." });
+  }
+}
