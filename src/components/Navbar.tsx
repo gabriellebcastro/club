@@ -8,10 +8,16 @@ type Notificacao = {
   tipo: string;
 };
 
+type Usuario = {
+  _id: string;
+  foto?: string;
+};
+
 export function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [notificacoes, setNotificacoes] = useState<Notificacao[]>([]);
   const [mostrarNotificacoes, setMostrarNotificacoes] = useState(false);
+  const [usuario, setUsuario] = useState<Usuario | null>(null);
   const navigate = useNavigate();
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
@@ -24,24 +30,32 @@ export function Navbar() {
 
   useEffect(() => {
     fetchNotificacoes();
+    fetchUsuario();
   }, []);
+
+  const fetchUsuario = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch("http://localhost:4000/api/usuario", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) throw new Error("Erro ao buscar usuário");
+      const data = await res.json();
+      setUsuario(data);
+    } catch (err) {
+      console.error("Erro ao buscar usuário:", err);
+    }
+  };
 
   const fetchNotificacoes = async () => {
     try {
       const token = localStorage.getItem("token");
       const res = await fetch("http://localhost:4000/api/notificacoes", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
 
-      if (!res.ok) {
-        const text = await res.text();
-        throw new Error(`Erro na resposta: ${text}`);
-      }
-
+      if (!res.ok) throw new Error("Erro ao buscar notificações");
       const data = await res.json();
-      console.log("Notificações recebidas:", data); // Log para ver as notificações
       setNotificacoes(data);
     } catch (err) {
       console.error("Erro ao buscar notificações:", err);
@@ -57,14 +71,12 @@ export function Navbar() {
     }
   };
 
-  const aceitarSolicitacao = async (notificacaoId: string) => {
+  const aceitarSolicitacao = async (id: string) => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`http://localhost:4000/api/notificacoes/${notificacaoId}/aceitar`, {
+      const res = await fetch(`http://localhost:4000/api/notificacoes/${id}/aceitar`, {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       const data = await res.json();
@@ -80,21 +92,19 @@ export function Navbar() {
     }
   };
 
-  const negarSolicitacao = async (notificacaoId: string) => {
+  const negarSolicitacao = async (id: string) => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`http://localhost:4000/api/notificacoes/${notificacaoId}/negar`, {
+      const res = await fetch(`http://localhost:4000/api/notificacoes/${id}/negar`, {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       const data = await res.json();
 
       if (res.ok) {
         alert(data.message || "Solicitação negada com sucesso.");
-        await fetchNotificacoes(); // Atualiza a lista
+        await fetchNotificacoes();
       } else {
         alert(data.message || "Erro ao negar solicitação.");
       }
@@ -123,32 +133,29 @@ export function Navbar() {
               {notificacoes.length === 0 ? (
                 <p className="sem-notificacao">Sem notificações</p>
               ) : (
-                notificacoes.map((n) => {
-                  console.log("Renderizando notificação:", n); // Log para cada notificação
-                  return (
-                    <div key={n._id} className="notificacao-item">
-                      <span>{n.mensagem}</span>
-                      {n.tipo === "solicitacao_entrada" && (
-                        <>
-                          <button
-                            className="btn-aceitar"
-                            onClick={() => aceitarSolicitacao(n._id)}
-                            title="Aceitar solicitação"
-                          >
-                            ✔️
-                          </button>
-                          <button
-                            className="btn-negar"
-                            onClick={() => negarSolicitacao(n._id)}
-                            title="Negar solicitação"
-                          >
-                            ❌
-                          </button>
-                        </>
-                      )}
-                    </div>
-                  );
-                })
+                notificacoes.map((n) => (
+                  <div key={n._id} className="notificacao-item">
+                    <span>{n.mensagem}</span>
+                    {n.tipo === "solicitacao_entrada" && (
+                      <>
+                        <button
+                          className="btn-aceitar"
+                          onClick={() => aceitarSolicitacao(n._id)}
+                          title="Aceitar solicitação"
+                        >
+                          ✔️
+                        </button>
+                        <button
+                          className="btn-negar"
+                          onClick={() => negarSolicitacao(n._id)}
+                          title="Negar solicitação"
+                        >
+                          ❌
+                        </button>
+                      </>
+                    )}
+                  </div>
+                ))
               )}
             </div>
           )}
@@ -157,7 +164,7 @@ export function Navbar() {
         <div className="avatar-wrapper" onClick={toggleMenu}>
           <img
             className="avatar"
-            src="https://i.pravatar.cc/40"
+            src={usuario?.foto || "/assets/placeholder.jpg"}
             alt="Perfil do usuário"
           />
           {menuOpen && (

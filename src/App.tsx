@@ -9,6 +9,7 @@ import { ClubePage } from "./components/ClubePage";
 import { UserProfile } from "./components/UserProfile";
 import { CreateEvent } from "./components/CreateEvent";
 import { EventosPage } from "./components/EventosPage";
+import { SettingsPage } from "./components/SettingsPage";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
         <Route path="/profile" element={<UserProfile />} />
         <Route path="/clubes/:id/eventos/novo" element={<CreateEvent />} />
         <Route path="/eventos" element={<EventosPage />} />
+        <Route path="/configuracoes" element={<SettingsPage />} />
       </Routes>
     </Router>
   );

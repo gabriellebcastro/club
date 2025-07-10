@@ -1,16 +1,51 @@
+import { useEffect, useState } from "react";
 import { Navbar } from "./Navbar";
 import "./UserProfile.css";
 
+type Usuario = {
+  _id: string;
+  username: string;
+  descricao?: string;
+  foto?: string;
+};
+
 export function UserProfile() {
+  const [usuario, setUsuario] = useState<Usuario | null>(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    const fetchUsuario = async () => {
+      try {
+        const res = await fetch("http://localhost:4000/api/usuario", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) throw new Error("Erro ao buscar perfil");
+        const data = await res.json();
+        setUsuario(data);
+      } catch (err) {
+        console.error("Erro ao carregar perfil do usuário", err);
+      }
+    };
+
+    fetchUsuario();
+  }, []);
+
   return (
     <>
       <Navbar />
 
       <header className="perfil-hero">
         <div className="perfil-header-content">
-          <img className="perfil-foto" src="https://i.pravatar.cc/150" alt="Foto de Perfil" />
-          <h1>Gabrielle Castro</h1>
-          <p className="perfil-bio">Amante de romances históricos e leitora compulsiva nas madrugadas. 💫</p>
+          <img
+            className="perfil-foto"
+            src={usuario?.foto || "/assets/placeholder.jpg"}
+            alt="Foto de Perfil"
+          />
+          <h1>{usuario?.username || "Usuário Desconhecido"}</h1>
+          <p className="perfil-bio">
+            {usuario?.descricao || "Este usuário ainda não escreveu uma bio."}
+          </p>
         </div>
       </header>
 
@@ -32,7 +67,6 @@ export function UserProfile() {
             <h3>É Assim que Acaba</h3>
             <p>Colleen Hoover</p>
           </div>
-          {/* Adicione mais livros conforme necessário */}
         </div>
       </main>
     </>

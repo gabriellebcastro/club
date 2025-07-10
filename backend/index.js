@@ -1,45 +1,44 @@
+// index.js
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+
+// Rotas e modelos
 import clubRoutes from './routes/clubRoutes.js';
 import eventoRoutes from './routes/eventoRoutes.js';
+import userRoutes from './routes/userRoutes.js';
+import User from './models/User.js'; // ✅ Usando o modelo existente
 
 dotenv.config();
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+// Rotas da API
 app.use('/api', clubRoutes);
 app.use('/api', eventoRoutes);
+app.use('/api/usuario', userRoutes);
 
 // Conectar ao MongoDB
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB conectado"))
   .catch(err => console.log(err));
 
-// Modelo de Usuário
-const userSchema = new mongoose.Schema({
-  email: { type: String, required: true, unique: true },
-  username: { type: String, required: true, unique: true },
-  passwordHash: { type: String, required: true }
-});
-
-const User = mongoose.model('User', userSchema);
-
-// Registro
+// 🔐 Registro
 app.post('/register', async (req, res) => {
   const { email, username, password } = req.body;
 
-  if(!email || !username || !password) {
+  if (!email || !username || !password) {
     return res.status(400).json({ message: "Preencha todos os campos." });
   }
 
   try {
-    const existingUser = await User.findOne({ $or: [{email}, {username}] });
-    if(existingUser) {
+    const existingUser = await User.findOne({ $or: [{ email }, { username }] });
+    if (existingUser) {
       return res.status(400).json({ message: "Usuário ou email já cadastrado." });
     }
 
@@ -51,31 +50,33 @@ app.post('/register', async (req, res) => {
 
     res.status(201).json({ message: "Usuário criado com sucesso!" });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ message: "Erro no servidor." });
   }
 });
 
-// Login
+// 🔐 Login
 app.post('/login', async (req, res) => {
   const { emailOrUsername, password } = req.body;
 
-  if(!emailOrUsername || !password) {
+  if (!emailOrUsername || !password) {
     return res.status(400).json({ message: "Preencha todos os campos." });
   }
 
   try {
-    // Busca usuário por email ou username
-    const user = await User.findOne({ $or: [{ email: emailOrUsername }, { username: emailOrUsername }] });
-    if(!user) {
+    const user = await User.findOne({
+      $or: [{ email: emailOrUsername }, { username: emailOrUsername }]
+    });
+
+    if (!user) {
       return res.status(400).json({ message: "Usuário não encontrado." });
     }
 
     const isMatch = await bcrypt.compare(password, user.passwordHash);
-    if(!isMatch) {
+    if (!isMatch) {
       return res.status(400).json({ message: "Senha incorreta." });
     }
 
-    // Cria token JWT
     const token = jwt.sign(
       { id: user._id, username: user.username, email: user.email },
       process.env.JWT_SECRET,
@@ -84,15 +85,16 @@ app.post('/login', async (req, res) => {
 
     res.json({ token, username: user.username, email: user.email });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ message: "Erro no servidor." });
   }
 });
 
-// Rota protegida de teste
+// 🔐 Rota de teste protegida
 app.get('/profile', async (req, res) => {
   const authHeader = req.headers.authorization;
 
-  if(!authHeader) return res.status(401).json({ message: 'Token não fornecido' });
+  if (!authHeader) return res.status(401).json({ message: 'Token não fornecido' });
 
   const token = authHeader.split(' ')[1];
 
@@ -100,8 +102,9 @@ app.get('/profile', async (req, res) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     res.json({ message: 'Acesso autorizado', user: decoded });
   } catch (err) {
-    res.status(401).json({ message: 'Token inválido' });
+    return res.status(401).json({ message: 'Token inválido' });
   }
 });
 
-app.listen(process.env.PORT || 4000, () => console.log('Servidor rodando na porta 4000'));
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));

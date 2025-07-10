@@ -1,0 +1,263 @@
+.settings-container {
+  max-width: 720px;
+  margin: 2rem auto;
+  padding: 1rem 2rem;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: #222;
+}
+
+h1 {
+  font-size: 2.2rem;
+  margin-bottom: 2rem;
+  font-weight: 700;
+}
+
+.perfil-section,
+.clubes-section {
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 1.8rem 2rem;
+  margin-bottom: 2.5rem;
+  box-shadow: 0 4px 10px rgb(0 0 0 / 0.05);
+}
+
+.perfil-section h2,
+.clubes-section h2 {
+  margin-bottom: 1.2rem;
+  font-weight: 600;
+  color: #333;
+}
+
+label {
+  display: block;
+  margin-bottom: 1rem;
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+input[type="text"],
+textarea {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  margin-top: 0.4rem;
+  transition: border-color 0.3s;
+}
+
+input[type="text"]:focus,
+textarea:focus {
+  border-color: #4caf50;
+  outline: none;
+}
+
+button.btn-primary {
+  background-color: #2e7d32;
+  color: #fff;
+  padding: 0.65rem 1.4rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.25s ease;
+  margin-top: 1rem;
+}
+
+button.btn-primary[disabled],
+button.btn-primary[aria-disabled="true"] {
+  background-color: #9ccc65;
+  cursor: not-allowed;
+}
+
+button.btn-primary:hover:not([disabled]) {
+  background-color: #1b5e20;
+}
+
+.foto-preview-container {
+  margin-bottom: 1rem;
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgb(0 0 0 / 0.1);
+}
+
+.foto-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.foto-placeholder {
+  width: 130px;
+  height: 130px;
+  background-color: #ddd;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #666;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.upload-label {
+  display: inline-block;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+  color: #2e7d32;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.upload-label:hover,
+.upload-label:focus {
+  color: #1b5e20;
+  outline: none;
+}
+
+.clubes-lista {
+  list-style: none;
+  padding-left: 0;
+}
+
+.clube-config {
+  border-bottom: 1px solid #eee;
+  padding: 1rem 0;
+}
+
+.clube-config strong {
+  font-size: 1.1rem;
+  color: #1b5e20;
+}
+
+.clube-config p {
+  color: #555;
+  margin: 0.25rem 0 0.8rem 0;
+}
+
+button.btn-secondary {
+  margin-right: 0.8rem;
+  padding: 0.4rem 0.9rem;
+  border: none;
+  border-radius: 8px;
+  background-color: #1565c0;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+button.btn-secondary:hover {
+  background-color: #0d47a1;
+}
+
+/* ==== NOVAS REGRAS PARA EditableField ==== */
+
+.editable-field {
+  margin-bottom: 1.4rem;
+}
+
+.field-display {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 1rem;
+  background-color: #f9f9f9;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  transition: border-color 0.3s;
+  cursor: default;
+}
+
+.field-display:focus {
+  outline: none;
+  border-color: #4caf50;
+  background-color: #fff;
+}
+
+.field-display span {
+  flex-grow: 1;
+  color: #333;
+}
+
+.field-display span i {
+  color: #999;
+  font-style: italic;
+}
+
+.edit-btn {
+  background: none;
+  border: none;
+  color: #4caf50;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.3s;
+}
+
+.edit-btn:hover,
+.edit-btn:focus {
+  color: #1b5e20;
+  outline: none;
+}
+
+/* Contêiner dos botões Salvar/Cancelar na edição */
+
+.edit-controls {
+  margin-top: 0.5rem;
+  display: flex;
+  gap: 0.8rem;
+}
+
+/* Ajustes para textarea e input dentro da edição */
+
+.editable-field textarea,
+.editable-field input[type="text"] {
+  font-size: 1rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  width: 100%;
+  resize: vertical;
+  transition: border-color 0.3s;
+}
+
+.editable-field textarea:focus,
+.editable-field input[type="text"]:focus {
+  border-color: #4caf50;
+  outline: none;
+}
+
+.btn-danger {
+  background-color: #c62828;
+  color: white;
+  font-weight: 600;
+  padding: 0.65rem 1.4rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-danger:hover {
+  background-color: #b71c1c;
+}
+
+.upload-label {
+  display: inline-block;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+  color: #2e7d32;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.upload-label:hover,
+.upload-label:focus {
+  color: #1b5e20;
+  outline: none;
+}
