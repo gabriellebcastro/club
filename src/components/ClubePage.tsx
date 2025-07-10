@@ -19,10 +19,21 @@ type Clube = {
   ehMembro?: boolean;
 };
 
+type Evento = {
+  _id: string;
+  nome: string;
+  descricao?: string;
+  data: string;
+  horario: string;
+  plataforma: string;
+};
+
 export function ClubePage() {
   const { id } = useParams();
   const navigate = useNavigate();
+
   const [clube, setClube] = useState<Clube | null>(null);
+  const [eventos, setEventos] = useState<Evento[]>([]);
 
   useEffect(() => {
     const fetchClube = async () => {
@@ -40,7 +51,23 @@ export function ClubePage() {
       }
     };
 
+    const fetchEventos = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const res = await fetch(`http://localhost:4000/api/clubes/${id}/eventos`, {
+          headers: {
+            Authorization: token ? `Bearer ${token}` : "",
+          },
+        });
+        const data = await res.json();
+        setEventos(data);
+      } catch (err) {
+        console.error("Erro ao buscar eventos:", err);
+      }
+    };
+
     fetchClube();
+    fetchEventos();
   }, [id]);
 
   const participarDoClube = async (clubeId: string) => {
@@ -129,12 +156,16 @@ export function ClubePage() {
             {clube?.ehModerador ? (
               <button
                 className="btn-criar-evento"
-                onClick={() => navigate(`/clubes/${clube._id}/eventos/novo`)} // ✅ REDIRECIONAMENTO AQUI
+                onClick={() => navigate(`/clubes/${clube._id}/eventos/novo`)}
               >
                 + Criar Evento
               </button>
             ) : clube?.ehMembro ? (
-              <p>Próximo evento: 28/06/2025</p>
+              eventos.length > 0 ? (
+                <p>Próximo evento: {new Date(eventos[0].data).toLocaleDateString()}</p>
+              ) : (
+                <p>Não há eventos agendados.</p>
+              )
             ) : (
               <p>Entre no clube para ver os eventos.</p>
             )}
@@ -142,19 +173,19 @@ export function ClubePage() {
 
           {(clube?.ehModerador || clube?.ehMembro) && (
             <div className="eventos-lista">
-              <div className="evento-card">
-                <h3>Discussão da Parte 1</h3>
-                <p><strong>Data:</strong> 28/06/2025</p>
-                <p><strong>Horário:</strong> 19:00</p>
-                <p><strong>Plataforma:</strong> Google Meet</p>
-              </div>
-
-              <div className="evento-card">
-                <h3>Encontro Literário Especial</h3>
-                <p><strong>Data:</strong> 05/07/2025</p>
-                <p><strong>Horário:</strong> 20:00</p>
-                <p><strong>Plataforma:</strong> Zoom</p>
-              </div>
+              {eventos.length > 0 ? (
+                eventos.map((evento) => (
+                  <div key={evento._id} className="evento-card">
+                    <h3>{evento.nome}</h3>
+                    {evento.descricao && <p>{evento.descricao}</p>}
+                    <p><strong>Data:</strong> {new Date(evento.data).toLocaleDateString()}</p>
+                    <p><strong>Horário:</strong> {evento.horario}</p>
+                    <p><strong>Plataforma:</strong> {evento.plataforma}</p>
+                  </div>
+                ))
+              ) : (
+                <p style={{ padding: "8px" }}>Nenhum evento futuro agendado.</p>
+              )}
             </div>
           )}
         </section>

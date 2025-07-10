@@ -33,14 +33,17 @@ export async function criarEvento(req, res) {
 }
 
 export async function listarEventosPorClube(req, res) {
+  const { clubeId } = req.params;
+
   try {
-    const { clubeId } = req.params;
+    const eventosFuturos = await Evento.find({
+      clube: clubeId,
+      data: { $gte: new Date() }, // apenas eventos com data >= hoje
+    }).sort({ data: 1 }); // ordena por data ascendente
 
-    const eventos = await Evento.find({ clube: clubeId }).sort({ data: 1 });
-
-    res.status(200).json(eventos);
-  } catch (err) {
-    console.error("Erro ao listar eventos:", err);
+    res.json(eventosFuturos);
+  } catch (error) {
+    console.error("Erro ao listar eventos:", error);
     res.status(500).json({ message: "Erro ao buscar eventos." });
   }
 }
