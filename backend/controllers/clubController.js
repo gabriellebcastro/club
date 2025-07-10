@@ -63,29 +63,25 @@ export async function listarClubes(req, res) {
 
 export async function obterClubePorId(req, res) {
   try {
-    const clube = await Club.findById(req.params.id).populate('moderador', 'username');
+    const clube = await Club.findById(req.params.id)
+      .populate("moderador", "nome")
+      .populate("membros", "nome");
 
-    if (!clube) return res.status(404).json({ message: 'Clube não encontrado' });
+    if (!clube) return res.status(404).json({ message: "Clube não encontrado" });
 
-    const userId = req.user?.id || null;
+    const userId = req.user?.id;
 
-    const ehModerador = Boolean(userId) && (
-      (clube.moderador?._id?.toString() === userId.toString()) ||
-      (typeof clube.moderador === 'string' && clube.moderador === userId.toString())
-    );
+    const ehModerador = userId && clube.moderador._id.toString() === userId;
+    const ehMembro = userId && clube.membros.some(m => m._id.toString() === userId);
 
-    const ehMembro = Boolean(userId) && (
-      clube.membros?.some(m => m.toString() === userId.toString())
-    );
-
-    return res.json({
+    res.json({
       ...clube.toObject(),
       ehModerador,
       ehMembro,
     });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Erro ao buscar clube.' });
+  } catch (error) {
+    console.error("Erro ao buscar clube:", error);
+    res.status(500).json({ message: "Erro ao buscar clube" });
   }
 }
 
@@ -249,15 +245,23 @@ export async function listarMeusClubes(req, res) {
   try {
     const userId = req.user.id;
 
-    const clubes = await Club.find({ membros: userId })
-      .populate('moderador', 'username')
-      .select('nome tipo genero imagem membros moderador');
+    const clubes = await Club.find({
+      $or: [
+        { membros: userId },
+        { moderador: userId }
+      ]
+    })
+    .populate('moderador', 'username')
+    .select('nome tipo genero imagem membros moderador');
 
     const clubesComStatus = clubes.map(clube => {
+      const ehMembro = clube.membros.map(m => m.toString()).includes(userId);
+      const ehModerador = clube.moderador._id.toString() === userId;
+
       return {
         ...clube.toObject(),
-        ehMembro: true,
-        ehModerador: clube.moderador._id.toString() === userId,
+        ehMembro,
+        ehModerador,
       };
     });
 

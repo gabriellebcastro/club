@@ -3,6 +3,11 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Navbar } from "./Navbar";
 import "./ClubePage.css";
 
+type Usuario = {
+  _id: string;
+  nome: string;
+};
+
 type Clube = {
   _id: string;
   nome: string;
@@ -14,7 +19,8 @@ type Clube = {
   limite: number;
   regras: string;
   politica: string;
-  moderador: string | { _id: string };
+  moderador: Usuario;
+  membros?: Usuario[];
   ehModerador?: boolean;
   ehMembro?: boolean;
 };
@@ -60,7 +66,12 @@ export function ClubePage() {
           },
         });
         const data = await res.json();
-        setEventos(data);
+
+        console.log("📅 Eventos recebidos da API:", data); // ← LOG ADICIONADO AQUI
+
+        const hoje = new Date();
+        const eventosFuturos = data.filter((evento: Evento) => new Date(evento.data) >= hoje);
+        setEventos(eventosFuturos);
       } catch (err) {
         console.error("Erro ao buscar eventos:", err);
       }
@@ -84,7 +95,9 @@ export function ClubePage() {
       const data = await res.json();
       if (res.ok) {
         alert("Você agora faz parte do clube!");
-        setClube(prev => (prev ? { ...prev, ehMembro: true } : prev));
+        setClube((prev) =>
+          prev ? { ...prev, ehMembro: true, membros: data.membros } : prev
+        );
       } else {
         alert(data.message || "Erro ao entrar no clube.");
       }
@@ -102,7 +115,7 @@ export function ClubePage() {
         <p className="subheading">{clube?.descricao || "Buscando informações do clube..."}</p>
       </header>
 
-      {clube?.tipo === "Público" && !clube.ehMembro && (
+      {clube?.tipo === "Público" && !clube?.ehMembro && (
         <div className="btn-container">
           <button
             className="btn-fazer-parte"
@@ -125,7 +138,10 @@ export function ClubePage() {
             <li><strong>Tipo:</strong> {clube?.tipo || "—"}</li>
             <li><strong>Formato:</strong> {clube?.formato || "—"}</li>
             <li><strong>Frequência:</strong> {clube?.frequencia || "—"}</li>
-            <li><strong>Participantes:</strong> — / {clube?.limite || "—"}</li>
+            <li>
+              <strong>Participantes:</strong>{" "}
+              {clube?.membros?.length ?? 0} / {clube?.limite ?? "—"}
+            </li>
           </ul>
         </section>
 
@@ -211,9 +227,13 @@ export function ClubePage() {
         <section className="clube-participantes">
           <h2>Membros</h2>
           <div className="membros-lista">
-            <div className="membro">📚 Ana Paula</div>
-            <div className="membro">📚 João Silva</div>
-            <div className="membro">📚 Carla Mendes</div>
+            {clube?.membros?.length ? (
+              clube.membros.map((membro) => (
+                <div key={membro._id} className="membro">📚 {membro.nome}</div>
+              ))
+            ) : (
+              <p>Nenhum membro ainda.</p>
+            )}
           </div>
         </section>
       </main>

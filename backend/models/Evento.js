@@ -1,10 +1,9 @@
-// models/Evento.js
 import mongoose from 'mongoose';
 
 const eventoSchema = new mongoose.Schema({
   nome: { type: String, required: true },
   descricao: { type: String },
-  data: { type: String, required: true },
+  data: { type: Date, required: true },        // <-- aqui
   horario: { type: String, required: true },
   plataforma: { type: String, required: true },
   clube: { 
