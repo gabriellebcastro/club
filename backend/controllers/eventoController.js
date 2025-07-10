@@ -52,8 +52,10 @@ export async function listarEventosDoUsuario(req, res) {
   try {
     const userId = req.user.id;
 
-    // 1. Buscar clubes que o usuário participa
-    const clubes = await Club.find({ membros: userId }).select("_id");
+    // 1. Buscar clubes onde o usuário é membro ou moderador
+    const clubes = await Club.find({
+      $or: [{ membros: userId }, { moderador: userId }]
+    }).select("_id");
 
     const clubesIds = clubes.map(clube => clube._id);
 
@@ -63,7 +65,7 @@ export async function listarEventosDoUsuario(req, res) {
       clube: { $in: clubesIds },
       data: { $gte: hoje }
     })
-      .populate("clube", "nome imagem") // retorna os dados do clube
+      .populate("clube", "nome imagem")
       .sort({ data: 1 });
 
     res.json(eventos);
