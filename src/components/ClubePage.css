@@ -176,3 +176,10 @@
   background: #005fcc;
   transform: translateY(-2px);
 }
+
+.leitura-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}

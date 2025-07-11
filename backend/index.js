@@ -10,6 +10,7 @@ import dotenv from 'dotenv';
 import clubRoutes from './routes/clubRoutes.js';
 import eventoRoutes from './routes/eventoRoutes.js';
 import userRoutes from './routes/userRoutes.js';
+import leituraRoutes from './routes/leituraRoutes.js';
 import User from './models/User.js'; 
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -28,6 +29,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/api/clubes', clubRoutes);
 app.use('/api', eventoRoutes);
 app.use('/api/usuario', userRoutes);
+app.use("/api", leituraRoutes);
 
 // Conectar ao MongoDB
 mongoose.connect(process.env.MONGO_URI)

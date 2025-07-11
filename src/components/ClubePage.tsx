@@ -5,7 +5,7 @@ import "./ClubePage.css";
 
 type Usuario = {
   _id: string;
-  nome: string;
+  username: string;
 };
 
 type Clube = {
@@ -34,22 +34,35 @@ type Evento = {
   plataforma: string;
 };
 
+type Leitura = {
+  _id: string;
+  titulo: string;
+  autor: string;
+  genero: string;
+  descricao?: string;
+  dataFim: string;
+  capa?: string;
+};
+
 export function ClubePage() {
   const { id } = useParams();
   const navigate = useNavigate();
 
   const [clube, setClube] = useState<Clube | null>(null);
   const [eventos, setEventos] = useState<Evento[]>([]);
+  const [leitura, setLeitura] = useState<Leitura | null>(null);
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+
     const fetchClube = async () => {
       try {
-        const token = localStorage.getItem("token");
         const res = await fetch(`http://localhost:4000/api/clubes/${id}`, {
           headers: {
             Authorization: token ? `Bearer ${token}` : "",
           },
         });
+        if (!res.ok) throw new Error("Erro ao buscar clube");
         const data = await res.json();
         setClube(data);
       } catch (err) {
@@ -59,19 +72,13 @@ export function ClubePage() {
 
     const fetchEventos = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const res = await fetch(
-          `http://localhost:4000/api/clubes/${id}/eventos`,
-          {
-            headers: {
-              Authorization: token ? `Bearer ${token}` : "",
-            },
-          }
-        );
+        const res = await fetch(`http://localhost:4000/api/clubes/${id}/eventos`, {
+          headers: {
+            Authorization: token ? `Bearer ${token}` : "",
+          },
+        });
+        if (!res.ok) throw new Error("Erro ao buscar eventos");
         const data = await res.json();
-
-        console.log("📅 Eventos recebidos da API:", data); // ← LOG ADICIONADO AQUI
-
         const hoje = new Date();
         const eventosFuturos = data.filter(
           (evento: Evento) => new Date(evento.data) >= hoje
@@ -82,23 +89,41 @@ export function ClubePage() {
       }
     };
 
+    const fetchLeitura = async () => {
+      try {
+        const res = await fetch(`http://localhost:4000/api/clubes/${id}/leitura`, {
+          headers: {
+            Authorization: token ? `Bearer ${token}` : "",
+          },
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setLeitura(data);
+        } else {
+          // Nenhuma leitura cadastrada ou erro, limpa leitura
+          setLeitura(null);
+        }
+      } catch (err) {
+        console.error("Erro ao buscar leitura:", err);
+        setLeitura(null);
+      }
+    };
+
     fetchClube();
     fetchEventos();
+    fetchLeitura();
   }, [id]);
 
   const participarDoClube = async (clubeId: string) => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(
-        `http://localhost:4000/api/clubes/${clubeId}/entrar`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res = await fetch(`http://localhost:4000/api/clubes/${clubeId}/entrar`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       const data = await res.json();
       if (res.ok) {
@@ -164,17 +189,45 @@ export function ClubePage() {
         </section>
 
         <section className="clube-leitura">
-          <h2>Leitura do Mês</h2>
-          <div className="leitura-box">
-            <img src="/capa-livro-exemplo.jpg" alt="Capa do Livro" />
-            <div>
-              <h3>A Biblioteca da Meia-Noite</h3>
-              <p>Autor: Matt Haig</p>
-              <p>Início: 01/06/2025</p>
-              <p>Término previsto: 30/06/2025</p>
-            </div>
+          <div className="leitura-header">
+            <h2>Leitura do Mês</h2>
+            {clube?.ehModerador && (
+              <button
+                className="btn-criar-evento"
+                onClick={() => navigate(`/clubes/${clube?._id}/leitura/nova`)}
+              >
+                + Cadastrar Leitura
+              </button>
+            )}
           </div>
+
+          {leitura ? (
+            <div className="leitura-box">
+              <img
+                src={
+                  leitura.capa
+                    ? `http://localhost:4000/uploads/${leitura.capa}`
+                    : "/capa-livro-exemplo.jpg"
+                }
+                alt={`Capa do livro ${leitura.titulo}`}
+              />
+              <div>
+                <h3>{leitura.titulo}</h3>
+                <p>Autor: {leitura.autor}</p>
+                <p>Gênero: {leitura.genero}</p>
+                <p>
+                  Término previsto:{" "}
+                  {new Date(leitura.dataFim).toLocaleDateString("pt-BR")}
+                </p>
+                {leitura.descricao && <p>{leitura.descricao}</p>}
+              </div>
+            </div>
+          ) : (
+            <p>Nenhuma leitura cadastrada.</p>
+          )}
         </section>
+
+        {/* resto da página permanece igual... */}
 
         <section className="clube-progresso">
           <h2>Progresso</h2>
@@ -265,7 +318,7 @@ export function ClubePage() {
             {clube?.membros?.length ? (
               clube.membros.map((membro) => (
                 <div key={membro._id} className="membro">
-                  📚 {membro.nome}
+                  📚 {membro.username}
                 </div>
               ))
             ) : (

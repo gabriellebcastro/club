@@ -10,6 +10,7 @@ import { UserProfile } from "./components/UserProfile";
 import { CreateEvent } from "./components/CreateEvent";
 import { EventosPage } from "./components/EventosPage";
 import { SettingsPage } from "./components/SettingsPage";
+import { NovaLeituraPage } from "./components/NovaLeituraPage.tsx";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
         <Route path="/clubes/:id/eventos/novo" element={<CreateEvent />} />
         <Route path="/eventos" element={<EventosPage />} />
         <Route path="/configuracoes" element={<SettingsPage />} />
+        <Route path="/clubes/:id/leitura/nova" element={<NovaLeituraPage />} />
       </Routes>
     </Router>
   );

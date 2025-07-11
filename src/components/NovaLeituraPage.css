@@ -1,0 +1,89 @@
+/* NovaLeituraPage.css */
+.nova-leitura-container {
+  background-image: url("../assets/bg-clubes.svg");
+  background-repeat: repeat-x;
+  background-size: 50% auto;
+  background-position: top center;
+  padding: 80px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: 'Inter', sans-serif;
+}
+
+.nova-leitura-container h1 {
+  font-size: 32px;
+  margin-bottom: 8px;
+  color: #222;
+}
+
+.nova-leitura-container .subheading {
+  font-size: 18px;
+  color: #666;
+  margin-bottom: 40px;
+}
+
+.form-box {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  padding: 40px 32px;
+  max-width: 540px;
+  width: 100%;
+  margin-top: -60px;
+  position: relative;
+}
+
+.step-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.step-content label {
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.step-content input,
+.step-content textarea,
+.step-content select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.step-content input[type="file"] {
+  padding: 10px 6px;
+  font-size: 13px;
+  border: none;
+}
+
+.step-content textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.form-navigation {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 32px;
+}
+
+.form-navigation button {
+  padding: 10px 20px;
+  border: none;
+  background-color: black;
+  color: white;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.form-navigation button:hover {
+  background-color: #333;
+}
