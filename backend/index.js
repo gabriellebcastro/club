@@ -10,7 +10,7 @@ import dotenv from 'dotenv';
 import clubRoutes from './routes/clubRoutes.js';
 import eventoRoutes from './routes/eventoRoutes.js';
 import userRoutes from './routes/userRoutes.js';
-import User from './models/User.js'; // ✅ Usando o modelo existente
+import User from './models/User.js'; 
 
 dotenv.config();
 
@@ -19,7 +19,7 @@ app.use(cors());
 app.use(express.json());
 
 // Rotas da API
-app.use('/api', clubRoutes);
+app.use('/api/clubes', clubRoutes);
 app.use('/api', eventoRoutes);
 app.use('/api/usuario', userRoutes);
 

@@ -271,3 +271,50 @@ export async function listarMeusClubes(req, res) {
     res.status(500).json({ message: "Erro ao listar seus clubes." });
   }
 }
+
+export async function atualizarClube(req, res) {
+  try {
+    const clube = await Club.findById(req.params.id);
+    if (!clube) return res.status(404).json({ message: 'Clube não encontrado.' });
+
+    if (clube.moderador.toString() !== req.user.id) {
+      return res.status(403).json({ message: 'Apenas o moderador pode editar o clube.' });
+    }
+
+    const camposPermitidos = [
+      'nome', 'descricao', 'genero', 'tipo', 'formato', 'frequencia',
+      'limite', 'faixa', 'regras', 'politica', 'novos', 'convidados'
+    ];
+
+    camposPermitidos.forEach(campo => {
+      if (req.body[campo] !== undefined) {
+        clube[campo] = req.body[campo];
+      }
+    });
+
+    await clube.save();
+    res.json(clube);
+  } catch (err) {
+    console.error("Erro ao atualizar clube:", err);
+    res.status(500).json({ message: 'Erro ao atualizar clube.' });
+  }
+}
+
+export async function removerMembro(req, res) {
+  try {
+    const clube = await Club.findById(req.params.id);
+    if (!clube) return res.status(404).json({ message: 'Clube não encontrado.' });
+
+    if (clube.moderador.toString() !== req.user.id) {
+      return res.status(403).json({ message: 'Apenas o moderador pode remover membros.' });
+    }
+
+    clube.membros = clube.membros.filter(m => m.toString() !== req.params.membroId);
+    await clube.save();
+
+    res.json({ message: 'Membro removido com sucesso.' });
+  } catch (err) {
+    console.error("Erro ao remover membro:", err);
+    res.status(500).json({ message: 'Erro ao remover membro.' });
+  }
+}

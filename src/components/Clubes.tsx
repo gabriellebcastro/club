@@ -27,10 +27,10 @@ useEffect(() => {
 
   const fetchClubes = async () => {
     try {
-      const endpoint =
-        tab === "meus"
-          ? "http://localhost:4000/api/meus-clubes"
-          : "http://localhost:4000/api/clubes";
+const endpoint =
+  tab === "meus"
+    ? "http://localhost:4000/api/clubes/moderados"
+    : "http://localhost:4000/api/clubes";
 
       const res = await fetch(endpoint, {
         headers: {

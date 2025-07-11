@@ -1,16 +1,36 @@
 import express from 'express';
-import { criarClube, listarClubes, obterClubePorId, solicitarEntrada, entrarNoClube, listarSolicitacoes, aceitarSolicitacao, negarSolicitacao, listarMeusClubes } from '../controllers/clubController.js';
+import {
+  criarClube,
+  listarClubes,
+  obterClubePorId,
+  solicitarEntrada,
+  entrarNoClube,
+  listarSolicitacoes,
+  aceitarSolicitacao,
+  negarSolicitacao,
+  listarMeusClubes,
+  atualizarClube,
+  removerMembro
+} from '../controllers/clubController.js';
 import { autenticar } from '../middleware/auth.js';
 
 const router = express.Router();
-router.post('/clubes', autenticar, criarClube);
-router.get('/clubes', autenticar, listarClubes);
-router.get('/clubes/:id', autenticar, obterClubePorId);
-router.post('/clubes/:id/solicitar', autenticar, solicitarEntrada);
-router.post('/clubes/:id/entrar', autenticar, entrarNoClube);
+
+router.post('/', autenticar, criarClube);
+router.get('/', autenticar, listarClubes);
+
+
+router.get('/moderados', autenticar, listarMeusClubes);
+
 router.get('/notificacoes', autenticar, listarSolicitacoes);
 router.post('/notificacoes/:id/aceitar', autenticar, aceitarSolicitacao);
 router.post('/notificacoes/:id/negar', autenticar, negarSolicitacao);
-router.get('/meus-clubes', autenticar, listarMeusClubes);
+
+router.get('/:id', autenticar, obterClubePorId);
+
+router.post('/:id/solicitar', autenticar, solicitarEntrada);
+router.post('/:id/entrar', autenticar, entrarNoClube);
+router.put('/:id', autenticar, atualizarClube);
+router.delete('/:id/membros/:membroId', autenticar, removerMembro);
 
 export default router;
