@@ -1,3 +1,29 @@
+.clube-hero {
+  margin-top: 80px; 
+  background-image: url("../assets/bg-clubes.svg");
+  background-repeat: repeat-x;
+  background-size: 50% auto;
+  background-position: top center;
+  padding: 40px 16px 60px;
+  text-align: center;
+  position: relative;
+  font-family: 'Inter', sans-serif;
+  color: #222;
+}
+
+.clube-hero h1 {
+  font-size: 36px;
+  margin-bottom: 10px;
+}
+
+.clube-hero .subheading {
+  font-size: 18px;
+  font-weight: 400;
+  color: #666;
+  margin-top: 10px;
+  margin-bottom: 30px;
+}
+
 .clube-container {
   max-width: 1000px;
   margin: 0 auto;
@@ -149,25 +175,4 @@
 .btn-fazer-parte:hover {
   background: #005fcc;
   transform: translateY(-2px);
-}
-
-.subheading {
-  font-size: 18px;
-  font-weight: 400;
-  color: #666;
-  text-align: center;
-  margin-top: 10px;
-  margin-bottom: 30px;
-}
-
-.clubes-hero {
-  background: linear-gradient(to right, #f0f4ff, #fff);
-  padding: 50px 16px 30px;
-  text-align: center;
-}
-
-.clubes-hero h1 {
-  font-size: 36px;
-  margin-bottom: 10px;
-  color: #222;
 }

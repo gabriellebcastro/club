@@ -42,24 +42,28 @@ export function EventosPage() {
   return (
     <>
       <Navbar />
-      <main className="eventos-page-container">
-        <h1 className="eventos-title">📅 Seus Eventos</h1>
-
-        {eventos.length === 0 ? (
-          <p className="sem-eventos">Nenhum evento encontrado.</p>
-        ) : (
-          <div className="eventos-grid">
-            {eventos.map((evento) => (
-              <div key={evento._id} className="evento-card-grid">
-                <div className="evento-clube-header">
-                  <strong>Clube:</strong> {evento.clube.nome}
-                </div>
-                <h2>{evento.nome}</h2>
-                {evento.descricao && <p className="descricao">{evento.descricao}</p>}
-                <p><strong>Data:</strong> {new Date(evento.data).toLocaleDateString()}</p>
-                <p><strong>Horário:</strong> {evento.horario}</p>
-                <p><strong>Plataforma:</strong> {evento.plataforma}</p>
-              </div>
+  <header className="eventos-hero">
+    <h1> Seus Eventos</h1>
+    <p className="subheading">
+          Seus próximos eventos agendados.
+        </p>
+  </header>
+  <main className="eventos-page-container">
+    {eventos.length === 0 ? (
+      <p className="sem-eventos">Nenhum evento encontrado.</p>
+    ) : (
+      <div className="eventos-grid">
+        {eventos.map((evento) => (
+          <div key={evento._id} className="evento-card-grid">
+            <div className="evento-clube-header">
+              <strong>Clube:</strong> {evento.clube.nome}
+            </div>
+            <h2>{evento.nome}</h2>
+            {evento.descricao && <p className="descricao">{evento.descricao}</p>}
+            <p><strong>Data:</strong> {new Date(evento.data).toLocaleDateString()}</p>
+            <p><strong>Horário:</strong> {evento.horario}</p>
+            <p><strong>Plataforma:</strong> {evento.plataforma}</p>
+          </div>
             ))}
           </div>
         )}

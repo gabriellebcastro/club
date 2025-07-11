@@ -2,18 +2,34 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./CreateClub.css";
 import { Navbar } from "./Navbar";
+import { FaArrowLeft, FaArrowRight, FaCheck } from "react-icons/fa";
+
+// Tipagem explícita para os dados do formulário, incluindo File para uploads
+type FormDataType = {
+  [key: string]: string | number | File | undefined;
+};
 
 export function CreateClub() {
   const [etapa, setEtapa] = useState(1);
-  const [formData, setFormData] = useState<Record<string, string | number>>({});
-  const navigate = useNavigate(); // ✅ isso que está faltando
+  const [formData, setFormData] = useState<FormDataType>({});
+  const navigate = useNavigate();
 
-
+  // Manipula inputs de texto, select e textarea
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // Manipula o input de arquivo (upload de imagem)
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return;
+    const file = e.target.files[0];
+    const { name } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: file }));
   };
 
   const avancar = () => setEtapa((prev) => prev + 1);
@@ -28,13 +44,24 @@ export function CreateClub() {
     }
 
     try {
+      // Cria FormData para enviar dados multipart (textos + arquivo)
+      const formPayload = new FormData();
+
+      for (const key in formData) {
+        const value = formData[key];
+        if (value instanceof File) {
+          formPayload.append(key, value);
+        } else if (value !== undefined) {
+          formPayload.append(key, String(value));
+        }
+      }
+
       const response = await fetch("http://localhost:4000/api/clubes", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${token}`, // NÃO colocar Content-Type aqui!
         },
-        body: JSON.stringify(formData),
+        body: formPayload,
       });
 
       const data = await response.json();
@@ -55,12 +82,12 @@ export function CreateClub() {
   return (
     <>
       <Navbar />
-      <div className="criarclub-container">
-        <header className="clubes-hero">
-          <h1>Crie seu Club</h1>
-          <p className="subheading">Dê início ao seu próprio clube do livro.</p>
-        </header>
 
+      <header className="clubes-hero">
+        <h1>Crie seu Club</h1>
+        <p className="subheading">Dê início ao seu próprio clube do livro.</p>
+      </header>
+      <div className="criarclub-container">
         <div className="form-box">
           <div className="step-tabs">
             <div className={etapa === 1 ? "active" : ""}>Informações Gerais</div>
@@ -78,7 +105,25 @@ export function CreateClub() {
               <select name="genero" onChange={handleInputChange}>
                 <option value="">Escolha o gênero</option>
                 <option value="Romance">Romance</option>
+                <option value="Ficção Científica">Ficção Científica</option>
+                <option value="Fantasia">Fantasia</option>
+                <option value="Mistério">Mistério</option>
+                <option value="Thriller">Thriller</option>
                 <option value="Terror">Terror</option>
+                <option value="Aventura">Aventura</option>
+                <option value="Biografia">Biografia</option>
+                <option value="História">História</option>
+                <option value="Clássicos">Clássicos</option>
+                <option value="Poesia">Poesia</option>
+                <option value="Drama">Drama</option>
+                <option value="Autoajuda">Autoajuda</option>
+                <option value="Não Ficção">Não Ficção</option>
+                <option value="Young Adult (YA)">Young Adult (YA)</option>
+                <option value="Infantojuvenil">Infantojuvenil</option>
+                <option value="Erótico">Erótico</option>
+                <option value="Filosofia">Filosofia</option>
+                <option value="Espiritualidade">Espiritualidade</option>
+                <option value="Psicologia">Psicologia</option>
               </select>
 
               <label>Tipo</label>
@@ -106,9 +151,16 @@ export function CreateClub() {
               <input type="number" name="limite" onChange={handleInputChange} />
               <label>Faixa Etária</label>
               <input type="text" name="faixa" onChange={handleInputChange} />
+
               <div className="form-navigation">
-                <button disabled>Voltar</button>
-                <button onClick={avancar}>Próximo</button>
+                <button disabled>
+                  <FaArrowLeft style={{ marginRight: 8 }} />
+                  Voltar
+                </button>
+                <button onClick={avancar}>
+                  Próximo
+                  <FaArrowRight style={{ marginLeft: 8 }} />
+                </button>
               </div>
             </div>
           )}
@@ -116,12 +168,17 @@ export function CreateClub() {
           {etapa === 2 && (
             <div className="step-content">
               <label>Capa</label>
-              <input type="file" disabled />
-              <label>Foto Perfil</label>
-              <input type="file" disabled />
+              <input type="file" name="capa" onChange={handleFileChange} />
+              {/* Foto perfil removida */}
               <div className="form-navigation">
-                <button onClick={voltar}>Voltar</button>
-                <button onClick={avancar}>Próximo</button>
+                <button onClick={voltar}>
+                  <FaArrowLeft style={{ marginRight: 8 }} />
+                  Voltar
+                </button>
+                <button onClick={avancar}>
+                  Próximo
+                  <FaArrowRight style={{ marginLeft: 8 }} />
+                </button>
               </div>
             </div>
           )}
@@ -130,41 +187,63 @@ export function CreateClub() {
             <div className="step-content">
               <label>Regras</label>
               <textarea name="regras" onChange={handleInputChange} />
-              <label>Política</label>
+
+              <label>Política de faltas</label>
               <input name="politica" onChange={handleInputChange} />
-              <label>Novos Membros</label>
-              <input
-                type="radio"
-                name="novos"
-                value="Sim"
-                onChange={handleInputChange}
-              />{" "}
-              Sim
-              <input
-                type="radio"
-                name="novos"
-                value="Não"
-                onChange={handleInputChange}
-              />{" "}
-              Não
-              <label>Convidados</label>
-              <input
-                type="radio"
-                name="convidados"
-                value="Sim"
-                onChange={handleInputChange}
-              />{" "}
-              Sim
-              <input
-                type="radio"
-                name="convidados"
-                value="Não"
-                onChange={handleInputChange}
-              />{" "}
-              Não
+
+              <label>Aceita novos membros?</label>
+              <div className="radio-group">
+                <label>
+                  <input
+                    type="radio"
+                    name="novos"
+                    value="Sim"
+                    onChange={handleInputChange}
+                  />
+                  Sim
+                </label>
+                <label>
+                  <input
+                    type="radio"
+                    name="novos"
+                    value="Não"
+                    onChange={handleInputChange}
+                  />
+                  Não
+                </label>
+              </div>
+
+              <label>Aceita convidados?</label>
+              <div className="radio-group">
+                <label>
+                  <input
+                    type="radio"
+                    name="convidados"
+                    value="Sim"
+                    onChange={handleInputChange}
+                  />
+                  Sim
+                </label>
+                <label>
+                  <input
+                    type="radio"
+                    name="convidados"
+                    value="Não"
+                    onChange={handleInputChange}
+                  />
+                  Não
+                </label>
+              </div>
+
               <div className="form-navigation">
-                <button onClick={voltar}>Voltar</button>
-                <button onClick={criarClube}>Criar Club</button>
+                <button onClick={voltar}>
+                  <FaArrowLeft style={{ marginRight: 8 }} />
+                  Voltar
+                </button>
+                <button onClick={criarClube}>
+                  <FaCheck style={{ marginRight: 8 }} />
+                  Criar Club
+                </button>
               </div>
             </div>
           )}

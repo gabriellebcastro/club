@@ -60,17 +60,22 @@ export function ClubePage() {
     const fetchEventos = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await fetch(`http://localhost:4000/api/clubes/${id}/eventos`, {
-          headers: {
-            Authorization: token ? `Bearer ${token}` : "",
-          },
-        });
+        const res = await fetch(
+          `http://localhost:4000/api/clubes/${id}/eventos`,
+          {
+            headers: {
+              Authorization: token ? `Bearer ${token}` : "",
+            },
+          }
+        );
         const data = await res.json();
 
         console.log("📅 Eventos recebidos da API:", data); // ← LOG ADICIONADO AQUI
 
         const hoje = new Date();
-        const eventosFuturos = data.filter((evento: Evento) => new Date(evento.data) >= hoje);
+        const eventosFuturos = data.filter(
+          (evento: Evento) => new Date(evento.data) >= hoje
+        );
         setEventos(eventosFuturos);
       } catch (err) {
         console.error("Erro ao buscar eventos:", err);
@@ -84,13 +89,16 @@ export function ClubePage() {
   const participarDoClube = async (clubeId: string) => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`http://localhost:4000/api/clubes/${clubeId}/entrar`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const res = await fetch(
+        `http://localhost:4000/api/clubes/${clubeId}/entrar`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       const data = await res.json();
       if (res.ok) {
@@ -112,7 +120,9 @@ export function ClubePage() {
 
       <header className="clubes-hero">
         <h1>{clube?.nome || "Carregando..."}</h1>
-        <p className="subheading">{clube?.descricao || "Buscando informações do clube..."}</p>
+        <p className="subheading">
+          {clube?.descricao || "Buscando informações do clube..."}
+        </p>
       </header>
 
       {clube?.tipo === "Público" && !clube?.ehMembro && (
@@ -134,13 +144,21 @@ export function ClubePage() {
         <section className="clube-info">
           <h2>Informações Gerais</h2>
           <ul>
-            <li><strong>Gênero:</strong> {clube?.genero || "—"}</li>
-            <li><strong>Tipo:</strong> {clube?.tipo || "—"}</li>
-            <li><strong>Formato:</strong> {clube?.formato || "—"}</li>
-            <li><strong>Frequência:</strong> {clube?.frequencia || "—"}</li>
             <li>
-              <strong>Participantes:</strong>{" "}
-              {clube?.membros?.length ?? 0} / {clube?.limite ?? "—"}
+              <strong>Gênero:</strong> {clube?.genero || "—"}
+            </li>
+            <li>
+              <strong>Tipo:</strong> {clube?.tipo || "—"}
+            </li>
+            <li>
+              <strong>Formato:</strong> {clube?.formato || "—"}
+            </li>
+            <li>
+              <strong>Frequência:</strong> {clube?.frequencia || "—"}
+            </li>
+            <li>
+              <strong>Participantes:</strong> {clube?.membros?.length ?? 0} /{" "}
+              {clube?.limite ?? "—"}
             </li>
           </ul>
         </section>
@@ -161,7 +179,9 @@ export function ClubePage() {
         <section className="clube-progresso">
           <h2>Progresso</h2>
           <div className="progress-bar">
-            <div className="progress" style={{ width: "45%" }}>45%</div>
+            <div className="progress" style={{ width: "45%" }}>
+              45%
+            </div>
           </div>
         </section>
 
@@ -178,7 +198,10 @@ export function ClubePage() {
               </button>
             ) : clube?.ehMembro ? (
               eventos.length > 0 ? (
-                <p>Próximo evento: {new Date(eventos[0].data).toLocaleDateString()}</p>
+                <p>
+                  Próximo evento:{" "}
+                  {new Date(eventos[0].data).toLocaleDateString()}
+                </p>
               ) : (
                 <p>Não há eventos agendados.</p>
               )
@@ -194,9 +217,16 @@ export function ClubePage() {
                   <div key={evento._id} className="evento-card">
                     <h3>{evento.nome}</h3>
                     {evento.descricao && <p>{evento.descricao}</p>}
-                    <p><strong>Data:</strong> {new Date(evento.data).toLocaleDateString()}</p>
-                    <p><strong>Horário:</strong> {evento.horario}</p>
-                    <p><strong>Plataforma:</strong> {evento.plataforma}</p>
+                    <p>
+                      <strong>Data:</strong>{" "}
+                      {new Date(evento.data).toLocaleDateString()}
+                    </p>
+                    <p>
+                      <strong>Horário:</strong> {evento.horario}
+                    </p>
+                    <p>
+                      <strong>Plataforma:</strong> {evento.plataforma}
+                    </p>
                   </div>
                 ))
               ) : (
@@ -210,7 +240,9 @@ export function ClubePage() {
           <h2>Regras do Clube</h2>
           <ul>
             {clube?.regras ? (
-              clube.regras.split(".").map((r, i) => r.trim() && <li key={i}>{r.trim()}.</li>)
+              clube.regras
+                .split(".")
+                .map((r, i) => r.trim() && <li key={i}>{r.trim()}.</li>)
             ) : (
               <>
                 <li>Respeito é essencial.</li>
@@ -221,7 +253,10 @@ export function ClubePage() {
           </ul>
 
           <h3>Política de Faltas</h3>
-          <p>{clube?.politica || "3 faltas consecutivas sem aviso resultam em remoção do clube."}</p>
+          <p>
+            {clube?.politica ||
+              "3 faltas consecutivas sem aviso resultam em remoção do clube."}
+          </p>
         </section>
 
         <section className="clube-participantes">
@@ -229,7 +264,9 @@ export function ClubePage() {
           <div className="membros-lista">
             {clube?.membros?.length ? (
               clube.membros.map((membro) => (
-                <div key={membro._id} className="membro">📚 {membro.nome}</div>
+                <div key={membro._id} className="membro">
+                  📚 {membro.nome}
+                </div>
               ))
             ) : (
               <p>Nenhum membro ainda.</p>

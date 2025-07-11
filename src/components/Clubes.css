@@ -5,6 +5,7 @@
   max-width: 1200px;
   margin: 0 auto;
   text-align: center;
+  min-height: 100vh;
 }
 
 .clubes-page h1 {

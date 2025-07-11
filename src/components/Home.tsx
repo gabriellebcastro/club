@@ -44,9 +44,9 @@ export function Home() {
       <Navbar />
       <div className="home-content">
         <div className="text-section">
-          <p className="greeting">Bem vinda,</p>
+          <p className="greeting">Oi,</p>
           <h1 className="username">{primeiroNome}.</h1>
-          <p className="subtitle">Pronta para embarcar em uma nova leitura?</p>
+          <p className="subtitle">Vamos embarcar em uma nova leitura?</p>
 
           <div className="buttons">
             <Link to="/clubes?tab=meus" className="btn black">
