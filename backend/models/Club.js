@@ -13,6 +13,7 @@ const clubSchema = new mongoose.Schema({
   politica: String,
   novos: String,
   convidados: String,
+  capa: String, // <- novo campo
   moderador: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',

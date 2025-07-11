@@ -11,12 +11,18 @@ import clubRoutes from './routes/clubRoutes.js';
 import eventoRoutes from './routes/eventoRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import User from './models/User.js'; 
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 
 dotenv.config();
 
 const app = express();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 app.use(cors());
 app.use(express.json());
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Rotas da API
 app.use('/api/clubes', clubRoutes);

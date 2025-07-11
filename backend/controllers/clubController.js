@@ -6,14 +6,17 @@ export async function criarClube(req, res) {
     const clubeData = {
       ...req.body,
       moderador: req.user.id,
+      capa: req.file?.filename || null, // adiciona a imagem se houver
     };
 
     const novoClube = new Club(clubeData);
+    novoClube.membros.push(req.user.id); // moderador já entra como membro
+
     await novoClube.save();
 
     res.status(201).json({ message: 'Clube criado com sucesso!', clube: novoClube });
   } catch (err) {
-    console.error(err);
+    console.error("Erro ao criar clube:", err);
     res.status(500).json({ message: 'Erro ao criar clube.' });
   }
 }
@@ -22,7 +25,7 @@ export async function listarClubes(req, res) {
   try {
     const clubes = await Club.find()
       .populate('moderador', 'username')
-      .select('nome tipo genero imagem membros moderador');
+      .select('nome tipo genero capa membros moderador');
 
     const userId = req.user?.id || null;
 

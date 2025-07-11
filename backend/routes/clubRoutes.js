@@ -13,10 +13,11 @@ import {
   removerMembro
 } from '../controllers/clubController.js';
 import { autenticar } from '../middleware/auth.js';
+import { upload } from "../middleware/upload.js";
 
 const router = express.Router();
 
-router.post('/', autenticar, criarClube);
+router.post('/', autenticar, upload.single('capa'), criarClube);
 router.get('/', autenticar, listarClubes);
 
 

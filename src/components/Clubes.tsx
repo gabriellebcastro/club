@@ -8,7 +8,7 @@ type Clube = {
   nome: string;
   tipo: string;
   genero: string;
-  imagem?: string;
+  capa?: string;
   membros?: string[];
   ehMembro?: boolean;
   ehModerador?: boolean;
@@ -22,32 +22,32 @@ export function ClubesPage() {
   const [showEncontrosDropdown, setShowEncontrosDropdown] = useState(false);
   const [clubes, setClubes] = useState<Clube[]>([]);
 
-useEffect(() => {
-  const token = localStorage.getItem("token");
+  useEffect(() => {
+    const token = localStorage.getItem("token");
 
-  const fetchClubes = async () => {
-    try {
-const endpoint =
-  tab === "meus"
-    ? "http://localhost:4000/api/clubes/moderados"
-    : "http://localhost:4000/api/clubes";
+    const fetchClubes = async () => {
+      try {
+        const endpoint =
+          tab === "meus"
+            ? "http://localhost:4000/api/clubes/moderados"
+            : "http://localhost:4000/api/clubes";
 
-      const res = await fetch(endpoint, {
-        headers: {
-          Authorization: token ? `Bearer ${token}` : "",
-        },
-      });
+        const res = await fetch(endpoint, {
+          headers: {
+            Authorization: token ? `Bearer ${token}` : "",
+          },
+        });
 
-      const data = await res.json();
-      console.log(`📥 Dados (${tab}):`, data);
-      setClubes(data);
-    } catch (err) {
-      console.error("Erro ao buscar clubes:", err);
-    }
-  };
+        const data = await res.json();
+        console.log(`📥 Dados (${tab}):`, data);
+        setClubes(data);
+      } catch (err) {
+        console.error("Erro ao buscar clubes:", err);
+      }
+    };
 
-  fetchClubes();
-}, [tab]);
+    fetchClubes();
+  }, [tab]);
 
   const solicitarEntrada = async (clubeId: string) => {
     try {
@@ -133,11 +133,16 @@ const endpoint =
 
         <div className="clubes-grid">
           {clubes.map((club, index) => {
+            const baseURL = "http://localhost:4000/uploads/";
             return (
               <div className="clube-card" key={index}>
                 <img
-                  src="https://via.placeholder.com/150x100"
-                  alt="Clube"
+                  src={
+                    club.capa
+                      ? baseURL + club.capa
+                      : "https://via.placeholder.com/150x100"
+                  }
+                  alt={`Imagem do clube ${club.nome}`}
                   className="clube-img"
                 />
                 <span className="tipo">{club.tipo}</span>
