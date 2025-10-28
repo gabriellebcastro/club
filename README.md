@@ -1,58 +1,68 @@
-<<<<<<< HEAD
-# React + TypeScript + Vite
+# 📚 Club — Plataforma de Gestão de Clubes do Livro
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+O **Club** é um sistema web desenvolvido em **React + TypeScript + Node.js + Express + MongoDB**, criado para gerenciar clubes do livro.  
+Usuários podem criar clubes, participar de leituras, organizar eventos e acompanhar o progresso das leituras mensais.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🧠 Funcionalidades Principais
+- Cadastro e autenticação de usuários com **JWT**
+- Criação e gerenciamento de clubes do livro
+- Participação em clubes públicos ou privados
+- Sistema de **eventos** para encontros e discussões literárias
+- Edição de perfil e configuração de clubes
+- Interface responsiva e intuitiva
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🧩 Tecnologias Utilizadas
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+### **Frontend**
+- [React](https://reactjs.org/)
+- [React Router DOM](https://reactrouter.com/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Vite](https://vitejs.dev/)
+- [React Icons](https://react-icons.github.io/react-icons/)
+
+### **Backend**
+- [Node.js](https://nodejs.org/)
+- [Express](https://expressjs.com/)
+- [Mongoose](https://mongoosejs.com/) — ODM para integração com MongoDB
+- [JWT (jsonwebtoken)](https://www.npmjs.com/package/jsonwebtoken)
+- [BcryptJS](https://www.npmjs.com/package/bcryptjs)
+- [Multer](https://www.npmjs.com/package/multer) — Upload de arquivos
+- [Dotenv](https://www.npmjs.com/package/dotenv)
+- [CORS](https://www.npmjs.com/package/cors)
+
+### **Ferramentas de Desenvolvimento**
+- [ESLint](https://eslint.org/)
+- [TypeScript ESLint](https://typescript-eslint.io/)
+- [PostCSS](https://postcss.org/)
+- [Autoprefixer](https://github.com/postcss/autoprefixer)
+- [Vite Plugin React](https://www.npmjs.com/package/@vitejs/plugin-react)
+
+---
+
+## ⚙️ Instalação
+
+### 🔧 Pré-requisitos
+- Node.js (versão 18 ou superior)
+- MongoDB em execução localmente
+- Gerenciador de pacotes **npm**
+
+---
+
+### 📦 1️⃣ Instalar dependências
+Execute o comando na raiz do projeto:
+```bash
+npm install
 ```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+### 📦 2️⃣ Rodar o projeto
+Na pasta backend, crie o arquivo .env com suas credenciais e inicie o servidor com o comando:
 ```
-=======
-# club
->>>>>>> 6944388ee5f4a6b9f30bbdcc809305a5a17c6dff
+node index.js
+```
+Por fim, na pasta raiz do projeto, inicie o front-end com
+```
+npm run dev
+```
