@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Navbar } from "./Navbar";
 import "./ClubePage.css";
+import { AvaliacaoPopup } from "./AvaliacaoPopup"; 
 
 type Usuario = {
   _id: string;
@@ -51,6 +52,8 @@ export function ClubePage() {
   const [clube, setClube] = useState<Clube | null>(null);
   const [eventos, setEventos] = useState<Evento[]>([]);
   const [leitura, setLeitura] = useState<Leitura | null>(null);
+  const [mostrarPopup, setMostrarPopup] = useState(false);
+
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -221,13 +224,21 @@ export function ClubePage() {
                 </p>
                 {leitura.descricao && <p>{leitura.descricao}</p>}
               </div>
+              {clube?.ehMembro && (
+  <button className="btn-avaliar-livro" onClick={() => setMostrarPopup(true)}>
+    📖 Avaliar Livro
+  </button>
+)}
+
+{mostrarPopup && leitura && (
+  <AvaliacaoPopup leituraId={leitura._id} onClose={() => setMostrarPopup(false)} />
+)}
+
             </div>
           ) : (
             <p>Nenhuma leitura cadastrada.</p>
           )}
         </section>
-
-        {/* resto da página permanece igual... */}
 
         <section className="clube-progresso">
           <h2>Progresso</h2>

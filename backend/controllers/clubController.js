@@ -255,7 +255,7 @@ export async function listarMeusClubes(req, res) {
       ]
     })
     .populate('moderador', 'username')
-    .select('nome tipo genero imagem membros moderador');
+    .select('nome tipo genero capa membros moderador');
 
     const clubesComStatus = clubes.map(clube => {
       const ehMembro = clube.membros.map(m => m.toString()).includes(userId);

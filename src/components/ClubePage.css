@@ -183,3 +183,13 @@
   align-items: center;
   margin-bottom: 18px;
 }
+
+.btn-avaliar-livro {
+  margin-top: 12px;
+  background: #000000;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
